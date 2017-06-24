@@ -1,0 +1,552 @@
+{
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+	font: {
+		file: font-export.fnt
+	}
+	sub-title: {
+		file: sub-title-font-export.fnt
+	}
+	title: {
+		file: title-font-export.fnt
+	}
+}
+com.badlogic.gdx.graphics.Color: {
+	black: {
+		r: 0
+		g: 0
+		b: 0
+		a: 1
+	}
+	clear: {
+		r: 1
+		g: 0
+		b: 0
+		a: 0
+	}
+	color: {
+		r: 0.21176471
+		g: 0.5254902
+		b: 1
+		a: 1
+	}
+	color-pressed: {
+		r: 0.03529412
+		g: 0.28235295
+		b: 0.92156863
+		a: 1
+	}
+	color0: {
+		r: 0.1
+		g: 0.9
+		b: 0.1
+		a: 1
+	}
+	color0-pressed: {
+		r: 0.1
+		g: 0.9
+		b: 0.1
+		a: 1
+	}
+	color1: {
+		r: 0.21176471
+		g: 0.5254902
+		b: 1
+		a: 1
+	}
+	color1-pressed: {
+		r: 0.03529412
+		g: 0.28235295
+		b: 0.92156863
+		a: 1
+	}
+	color2: {
+		r: 1
+		g: 0.6
+		b: 0.20392157
+		a: 1
+	}
+	color2-pressed: {
+		r: 0.827451
+		g: 0.37254903
+		b: 0.08627451
+		a: 1
+	}
+	color3: {
+		r: 0.65882355
+		g: 0.6156863
+		b: 0.20392157
+		a: 1
+	}
+	color3-pressed: {
+		r: 0.94509804
+		g: 0.76862746
+		b: 0.06666667
+		a: 1
+	}
+	color4: {
+		r: 0.5803922
+		g: 0.627451
+		b: 1
+		a: 1
+	}
+	color4-pressed: {
+		r: 0.12156863
+		g: 1
+		b: 0.9764706
+		a: 1
+	}
+	color5: {
+		r: 0.92156863
+		g: 0.90588236
+		b: 0.75686276
+		a: 1
+	}
+	color5-pressed: {
+		r: 0.84705883
+		g: 0.64705884
+		b: 0.4392157
+		a: 1
+	}
+	white: {
+		r: 1
+		g: 1
+		b: 1
+		a: 1
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
+	button-c: {
+		name: button
+		color: color
+	}
+	button-c-p: {
+		name: button
+		color: color-pressed
+	}
+	button-c2: {
+		name: button
+		color: color2
+	}
+	button-c2-p: {
+		name: button
+		color: color2-pressed
+	}
+	button-c3: {
+		name: button
+		color: color3
+	}
+	button-c3-p: {
+		name: button
+		color: color3-pressed
+	}
+	button-c4: {
+		name: button
+		color: color4
+	}
+	button-c4-p: {
+		name: button
+		color: color4-pressed
+	}
+	button-c5: {
+		name: button
+		color: color5
+	}
+	button-c5-p: {
+		name: button
+		color: color5-pressed
+	}
+	button-big-c: {
+		name: button-big
+		color: color
+	}
+	button-big-c-p: {
+		name: button-big
+		color: color-pressed
+	}
+	button-big-c2: {
+		name: button-big
+		color: color2
+	}
+	button-big-c2-p: {
+		name: button-big
+		color: color2-pressed
+	}
+	button-big-c3: {
+		name: button-big
+		color: color3
+	}
+	button-big-c3-p: {
+		name: button-big
+		color: color3-pressed
+	}
+	button-big-c4: {
+		name: button-big
+		color: color4
+	}
+	button-big-c4-p: {
+		name: button-big
+		color: color4-pressed
+	}
+	button-big-c5: {
+		name: button-big
+		color: color5
+	}
+	button-big-c5-p: {
+		name: button-big
+		color: color5-pressed
+	}
+	button-big-disabled-c: {
+		name: button-big-disabled
+		color: color
+	}
+	button-big-disabled-c-p: {
+		name: button-big-disabled
+		color: color-pressed
+	}
+	button-big-disabled-c2: {
+		name: button-big-disabled
+		color: color2
+	}
+	button-big-disabled-c2-p: {
+		name: button-big-disabled
+		color: color2-pressed
+	}
+	button-big-disabled-c3: {
+		name: button-big-disabled
+		color: color3
+	}
+	button-big-disabled-c3-p: {
+		name: button-big-disabled
+		color: color3-pressed
+	}
+	button-big-disabled-c4: {
+		name: button-big-disabled
+		color: color4
+	}
+	button-big-disabled-c4-p: {
+		name: button-big-disabled
+		color: color4-pressed
+	}
+	button-big-disabled-c5: {
+		name: button-big-disabled
+		color: color5
+	}
+	button-big-disabled-c5-p: {
+		name: button-big-disabled
+		color: color5-pressed
+	}
+	button-disabled-c: {
+		name: button-disabled
+		color: color
+	}
+	button-disabled-c-p: {
+		name: button-disabled
+		color: color-pressed
+	}
+	button-disabled-c2: {
+		name: button-disabled
+		color: color2
+	}
+	button-disabled-c2-p: {
+		name: button-disabled
+		color: color2-pressed
+	}
+	button-disabled-c3: {
+		name: button-disabled
+		color: color3
+	}
+	button-disabled-c3-p: {
+		name: button-disabled
+		color: color3-pressed
+	}
+	button-disabled-c4: {
+		name: button-disabled
+		color: color4
+	}
+	button-disabled-c4-p: {
+		name: button-disabled
+		color: color4-pressed
+	}
+	button-disabled-c5: {
+		name: button-disabled
+		color: color5
+	}
+	button-disabled-c5-p: {
+		name: button-disabled
+		color: color5-pressed
+	}
+	button-oval-c: {
+		name: button-oval
+		color: color
+	}
+	button-oval-c-p: {
+		name: button-oval
+		color: color-pressed
+	}
+	button-oval-c0: {
+		name: button-oval
+		color: color0
+	}
+	button-oval-c0-p: {
+		name: button-oval
+		color: color0-pressed
+	}
+	button-oval-c1: {
+		name: button-oval
+		color: color1
+	}
+	button-oval-c1-p: {
+		name: button-oval
+		color: color1-pressed
+	}
+	button-oval-c2: {
+		name: button-oval
+		color: color2
+	}
+	button-oval-c2-p: {
+		name: button-oval
+		color: color2-pressed
+	}
+	button-oval-c3: {
+		name: button-oval
+		color: color3
+	}
+	button-oval-c3-p: {
+		name: button-oval
+		color: color3-pressed
+	}
+	button-oval-c4: {
+		name: button-oval
+		color: color4
+	}
+	button-oval-c4-p: {
+		name: button-oval
+		color: color4-pressed
+	}
+	button-oval-c5: {
+		name: button-oval
+		color: color5
+	}
+	button-oval-c5-p: {
+		name: button-oval
+		color: color5-pressed
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+	default: {
+		up: button-c
+		down: button-c-p
+		disabled: button-disabled-c
+	}
+	toggle: {
+		up: button-c
+		down: button-c-p
+		checked: button-c-p
+		disabled: button-disabled-c
+	}
+	oval: {
+		up: button-oval-c
+		down: button-oval-c-p
+	}
+	oval0: {
+		up: button-oval-c0
+		down: button-oval-c0-p
+	}
+	oval1: {
+		up: button-oval-c1
+		down: button-oval-c1-p
+	}
+	oval2: {
+		up: button-oval-c2
+		down: button-oval-c2-p
+	}
+	oval3: {
+		up: button-oval-c3
+		down: button-oval-c3-p
+	}
+	oval4: {
+		up: button-oval-c4
+		down: button-oval-c4-p
+	}
+	oval5: {
+		up: button-oval-c5
+		down: button-oval-c5-p
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	default: {
+		font: font
+		fontColor: black
+	}
+	white: {
+		font: font
+		fontColor: white
+	}
+	subtitle: {
+		font: sub-title
+		fontColor: black
+	}
+	subtitle-white: {
+		font: sub-title
+		fontColor: white
+	}
+	title: {
+		font: title
+		fontColor: black
+	}
+	title-white: {
+		font: title
+		fontColor: white
+	}
+	c: {
+		font: font
+		fontColor: color
+	}
+	c0: {
+		font: font
+		fontColor: color0
+	}
+	c1: {
+		font: font
+		fontColor: color1
+	}
+	c2: {
+		font: font
+		fontColor: color2
+	}
+	c3: {
+		font: font
+		fontColor: color3
+	}
+	c4: {
+		font: font
+		fontColor: color4
+	}
+	c5: {
+		font: font
+		fontColor: color5
+	}
+	subtitle-c1: {
+		font: sub-title
+		fontColor: color
+	}
+	subtitle-c2: {
+		font: sub-title
+		fontColor: color2
+	}
+	subtitle-c3: {
+		font: sub-title
+		fontColor: color3
+	}
+	subtitle-c4: {
+		font: sub-title
+		fontColor: color4
+	}
+	subtitle-c5: {
+		font: sub-title
+		fontColor: color5
+	}
+	title-c: {
+		font: title
+		fontColor: color
+	}
+	title-c0: {
+		font: title
+		fontColor: color0
+	}
+	title-c1: {
+		font: title
+		fontColor: color1
+	}
+	title-c2: {
+		font: title
+		fontColor: color2
+	}
+	title-c3: {
+		font: title
+		fontColor: color3
+	}
+	title-c4: {
+		font: title
+		fontColor: color4
+	}
+	title-c5: {
+		font: title
+		fontColor: color5
+	}
+}
+
+com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+	default: {
+		font: sub-title
+		fontColor: black
+		disabledFontColor: clear
+		up: button-c
+		down: button-c-p
+		disabled: button-disabled-c
+	}
+	toggle: {
+		font: sub-title
+		fontColor: black
+		disabledFontColor: clear
+		up: button-c
+		down: button-c-p
+		checked: button-c-p
+		disabled: button-disabled-c
+	}
+	oval: {
+		font: sub-title
+		fontColor: black
+		disabledFontColor: clear
+		up: button-oval-c
+		down: button-oval-c-p
+	}
+	oval0: {
+		font: sub-title
+		fontColor: black
+		disabledFontColor: clear
+		up: button-oval-c0
+		down: button-oval-c0-p
+	}
+	oval1: {
+		font: sub-title
+		fontColor: black
+		disabledFontColor: clear
+		up: button-oval-c1
+		down: button-oval-c1-p
+	}
+	oval2: {
+		font: sub-title
+		fontColor: black
+		disabledFontColor: clear
+		up: button-oval-c2
+		down: button-oval-c2-p
+	}
+	oval3: {
+		font: title
+		fontColor: black
+		disabledFontColor: clear
+		up: button-oval-c3
+		down: button-oval-c3-p
+	}
+	oval4: {
+		font: title
+		fontColor: black
+		disabledFontColor: clear
+		up: button-oval-c4
+		down: button-oval-c4-p
+	}
+	oval5: {
+		font: title
+		fontColor: black
+		disabledFontColor: clear
+		up: button-oval-c5
+		down: button-oval-c5-p
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
+	default: {
+		label: default
+	}
+}
+}
