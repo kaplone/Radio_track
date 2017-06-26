@@ -3,6 +3,7 @@ package fr.kaplone.libgdx;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -116,7 +117,13 @@ public class Radio_Track extends ApplicationAdapter {
 				TextButton tbp;
 
 				List<String> ids = new ArrayList<>();
+				List<VerticalGroup> vgs = new ArrayList<>();
 				String id = "";
+
+				if (! stage.getActors().contains(scroll_playList, true)){
+					System.out.println("ajout du scroll au stage ...");
+					stage.addActor(scroll_playList);
+				}
 
 				for (String ligne : lignes){
 
@@ -128,20 +135,15 @@ public class Radio_Track extends ApplicationAdapter {
 
 							if (! ids.contains(id)){
 								ids.add(id);
-
-								table_playList.add(vg).padTop(50);
-								table_playList.row();
-
-
-								if (! stage.getActors().contains(scroll_playList, true)){
-									stage.addActor(scroll_playList);
-									scroll_playList.setVisible(true);
-								}
+								vgs.add(vg);
 							}
 						}
 
 						id = ligne.substring(1, ligne.length() - 1);
 						vg = new VerticalGroup();
+						System.out.println(vg.getColor());
+						vg.setColor(Color.CHARTREUSE);
+						System.out.println(vg.getColor());
 						hg = new HorizontalGroup();
 						group = true;
 
@@ -178,10 +180,18 @@ public class Radio_Track extends ApplicationAdapter {
 						tbp.setTouchable(Touchable.disabled);
 						vg.addActor(tbp);
 					}
-
-
 				}
 
+				if (! ids.contains(id)){
+					ids.add(id);
+					vgs.add(vg);
+				}
+
+				for (int i = vgs.size() -1; i > 0; i--){
+					table_playList.add(vgs.get(i)).padTop(50).row();
+				}
+
+				System.out.println(vgs.size());
 
 				scroll_playList.setScrollY(0);
 
@@ -315,8 +325,6 @@ public class Radio_Track extends ApplicationAdapter {
 
 							TextButton tbb_ = null;
 
-							System.out.println("___ touch ___ " + nom);
-
 							if (nom.contains("not_saved")){
 								tbb_ = new TextButton("Saved", skin, "oval0");
 
@@ -447,8 +455,6 @@ public class Radio_Track extends ApplicationAdapter {
 
 							TextButton tbb_ = null;
 
-							System.out.println("___ touch ___ " + nom);
-
 							if (nom.contains("not_saved")){
 								tbb_ = new TextButton("Saved", skin, "oval0");
 
@@ -507,7 +513,7 @@ public class Radio_Track extends ApplicationAdapter {
         scroll_playList.setWidth(Gdx.graphics.getWidth() - 20);
         scroll_playList.setHeight(1000);
         scroll_playList.setPosition(10, 200);
-		//table.setDebug(true);
+		//table_playList.setDebug(true);
 
 		filename = "radio_track.txt";
 		file = Gdx.files.external(filename);
