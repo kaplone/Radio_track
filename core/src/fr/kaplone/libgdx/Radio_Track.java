@@ -8,15 +8,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleShader;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
+import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 
 public class Radio_Track extends ApplicationAdapter {
@@ -28,6 +30,9 @@ public class Radio_Track extends ApplicationAdapter {
 	Texture fip;
 	Texture playList;
 	Texture radio;
+	Texture divergence_ico;
+	Texture fip_ico;
+	Texture barre;
 
 	float fip_w;
 	float fip_h;
@@ -68,6 +73,9 @@ public class Radio_Track extends ApplicationAdapter {
 		fip = new Texture("fip.jpg");
 		playList = new Texture("playlist-512.png");
 		radio = new Texture("radio.png");
+		divergence_ico = new Texture("divergence_.jpg");
+		fip_ico = new Texture("fip.png");
+		barre = new Texture("barre_verte.png");
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
@@ -106,7 +114,15 @@ public class Radio_Track extends ApplicationAdapter {
 				scroll_playList.setVisible(true);
 				table_playList.clear();
 
-				String[] lignes = file.readString().split("\n");
+				String dateEnCours;
+				String dateEnCache = "";
+				TextButton t = null;
+
+				String[] lignes = new String[0];
+
+				if (file.exists()){
+					lignes = file.readString().split("\n");
+				}
 
 				VerticalGroup vg = null;
 				HorizontalGroup hg = null;
@@ -136,58 +152,108 @@ public class Radio_Track extends ApplicationAdapter {
 							if (! ids.contains(id)){
 								ids.add(id);
 								vgs.add(vg);
+
+								Image im = new Image(barre);
+								VerticalGroup h_barre = new VerticalGroup();
+								h_barre.addActor(im);
+								vgs.add(h_barre);
+
+								System.out.println("ajout regulier : VG");
 							}
 						}
 
 						id = ligne.substring(1, ligne.length() - 1);
+
 						vg = new VerticalGroup();
-						System.out.println(vg.getColor());
-						vg.setColor(Color.CHARTREUSE);
-						System.out.println(vg.getColor());
+						System.out.println("red = " + vg.getColor().r);
+						System.out.println("green = " + vg.getColor().g);
+						System.out.println("blue = " + vg.getColor().b);
+						System.out.println("alpha = " + vg.getColor().a);
+						vg.draw(batch, 1.0f);
+
 						hg = new HorizontalGroup();
+
 						group = true;
 
-						TextButton tbr = new TextButton(ligne.substring(1, ligne.length() - 1), skin, "oval4");
-						tbr.setTouchable(Touchable.disabled);
-						hg.addActor(tbr);
-						hg.space(50);
+						Image i = new Image( id.equals("FIP") ? fip_ico : divergence_ico);
+						i.setAlign(Align.left);
+						hg.addActor(i);
+						hg.space(500 - i.getWidth());
+					}
+
+					else if (ligne.startsWith("date")) {
+
+						dateEnCours = ligne.split(" : ")[1];
+						System.out.println(dateEnCours);
+
+						if (! vgs.isEmpty() && t != null && ! ids.contains(dateEnCours) && ! dateEnCours.equals(dateEnCache)){
+							ids.add(dateEnCours);
+
+							VerticalGroup vg_date = new VerticalGroup();
+							vg_date.addActor(t);
+							vgs.add(vg_date);
+							System.out.println("ajout regulier : " + dateEnCours);
+
+						}
+
+						t = new TextButton(dateEnCours , skin, "oval4");
+						t.setName(dateEnCours);
+						t.setTouchable(Touchable.disabled);
+
+						dateEnCache = dateEnCours;
+
 					}
 
 					else if (ligne.startsWith("heure")){
 
-						id += "-" + ligne.split(" : ")[1];
+						if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0){
+							id += "-" + ligne.split(" : ")[1];
 
-						tbh = new TextButton(ligne.split(" : ")[1], skin, "oval4");
-						tbh.setTouchable(Touchable.disabled);
-						hg.addActor(tbh);
-						vg.addActor(hg);
-
+							tbh = new TextButton(ligne.split(" : ")[1], skin, "oval4");
+							tbh.setTouchable(Touchable.disabled);
+							hg.addActor(tbh);
+							vg.addActor(hg);
+						}
 					}
 
 					else if (ligne.startsWith("titre")){
 
-						id += "-" + ligne.split(" : ")[1];
+						if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0){
+							id += "-" + ligne.split(" : ")[1];
 
-						tbt = new TextButton(ligne.split(" : ")[1], skin, "oval3");
-						tbt.setTouchable(Touchable.disabled);
-						vg.addActor(tbt);
+							tbt = new TextButton(normaliser(ligne.split(" : ")[1]), skin, "oval3");
+							tbt.setTouchable(Touchable.disabled);
+							vg.addActor(tbt);
+						}
 					}
 					else if (ligne.startsWith("interprete")){
 
-						id += "-" + ligne.split(" : ")[1];
+						if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0){
+							id += "-" + ligne.split(" : ")[1];
 
-						tbp = new TextButton(ligne.split(" : ")[1], skin, "oval5");
-						tbp.setTouchable(Touchable.disabled);
-						vg.addActor(tbp);
+							tbp = new TextButton(normaliser(ligne.split(" : ")[1]), skin, "oval5");
+							tbp.setTouchable(Touchable.disabled);
+							vg.addActor(tbp);
+						}
 					}
 				}
 
 				if (! ids.contains(id)){
-					ids.add(id);
 					vgs.add(vg);
+
+					System.out.println("ajout final : VG");
+
 				}
 
-				for (int i = vgs.size() -1; i > 0; i--){
+				if (t != null && ! ids.contains(t.getName())){
+					VerticalGroup vg_date = new VerticalGroup();
+					vg_date.addActor(t);
+					vgs.add(vg_date);
+
+					System.out.println("ajout final : t.getName()");
+				}
+
+				for (int i = vgs.size() -1; i >= 0; i--){
 					table_playList.add(vgs.get(i)).padTop(50).row();
 				}
 
@@ -300,12 +366,12 @@ public class Radio_Track extends ApplicationAdapter {
 					hg.space(400);
 					hg.addActor(tbb);
 
-					tbt = new TextButton(r.getTitre(), skin, "oval3");
+					tbt = new TextButton(normaliser(r.getTitre()), skin, "oval3");
 					tbt.setTouchable(Touchable.disabled);
 					tbt.setName(r.getTitre());
 					tbt.setWidth(Gdx.graphics.getWidth() - 50);
 
-					tbp = new TextButton(r.getAuteur(), skin, "oval5");
+					tbp = new TextButton(normaliser(r.getAuteur()), skin, "oval5");
 					tbp.setTouchable(Touchable.disabled);
 					tbp.setName(r.getAuteur());
 					tbp.setWidth(Gdx.graphics.getWidth() - 50);
@@ -332,6 +398,7 @@ public class Radio_Track extends ApplicationAdapter {
 
 
 								file.writeString("[DIVERGENCE FM]\n", true);
+								file.writeString("date : " + r_.getDate() + "\n", true);
 								file.writeString("heure : " + r_.getHeure() + "\n", true);
 								file.writeString("titre : " + r_.getTitre() + "\n", true);
 								file.writeString("interprete : " + r_.getAuteur() + "\n", true);
@@ -430,12 +497,12 @@ public class Radio_Track extends ApplicationAdapter {
 					hg.space(400);
 					hg.addActor(tbb);
 
-					tbt = new TextButton(r.getTitre(), skin, "oval3");
+					tbt = new TextButton(normaliser(r.getTitre()), skin, "oval3");
 					tbt.setTouchable(Touchable.disabled);
 					tbt.setName(r.getTitre());
 					tbt.setWidth(Gdx.graphics.getWidth() - 50);
 
-					tbp = new TextButton(r.getAuteur(), skin, "oval5");
+					tbp = new TextButton(normaliser(r.getAuteur()), skin, "oval5");
 					tbp.setTouchable(Touchable.disabled);
 					tbp.setName(r.getAuteur());
 					tbp.setWidth(Gdx.graphics.getWidth() - 50);
@@ -462,6 +529,7 @@ public class Radio_Track extends ApplicationAdapter {
 
 
 								file.writeString("[FIP]\n", true);
+								file.writeString("date : " + r_.getDate() + "\n", true);
 								file.writeString("heure : " + r_.getHeure() + "\n", true);
 								file.writeString("titre : " + r_.getTitre() + "\n", true);
 								file.writeString("interprete : " + r_.getAuteur() + "\n", true);
@@ -539,11 +607,6 @@ public class Radio_Track extends ApplicationAdapter {
 			         break;
 		}
 
-
-
-		//font.getData().setScale(2);
-		//font.draw(batch, resultats, 20, 700);
-
 		batch.end();
 	}
 	
@@ -557,5 +620,24 @@ public class Radio_Track extends ApplicationAdapter {
 	public static void setResultats(List<Resultat> resultats_) {
 		resultats = resultats_;
 		System.out.println("setResultats() : " + resultats.size());
+	}
+
+	private String normaliser(String s){
+		return s.substring(0, Math.min(30, s.length())).replace("é", "e")
+				                                          .replace("è", "e")
+														  .replace("ê", "e")
+														  .replace("ë", "e")
+														  .replace("à", "a")
+														  .replace("û", "u")
+														  .replace("ô", "o")
+														  .replace("î", "i")
+														  .replace("À", "A")
+														  .replace("Û", "U")
+														  .replace("Ô", "O")
+														  .replace("Î", "I")
+														  .replace("É", "E")
+														  .replace("È", "E")
+														  .replace("Ê", "E")
+				+ (s.length() > 30 ? "..." : "");
 	}
 }

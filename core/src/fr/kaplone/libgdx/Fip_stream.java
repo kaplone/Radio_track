@@ -88,6 +88,16 @@ public class Fip_stream implements Json.Serializable{
         return s;
     }
 
+    public String getDate(){
+
+        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+
+        Date date = new Date(start * 1000);
+        String s = formater.format(date);
+
+        return s;
+    }
+
     public String getTitle() {
         return title;
     }

@@ -10,10 +10,8 @@ import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class HttpManager implements HttpResponseListener
 {
@@ -83,6 +81,11 @@ public class HttpManager implements HttpResponseListener
             List<Resultat> resultats = new ArrayList<>();
             Resultat temp = null;
 
+            SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+
+            Date date = new Date();
+            String date_ = formater.format(date);
+
             for (XmlReader.Element child : items)
             {
                     if (child.getAttribute("class").equals("widget-posts-descr hour")){
@@ -94,6 +97,7 @@ public class HttpManager implements HttpResponseListener
                     else if (child.getAttribute("class").equals("widget-posts-descr ")){
                         temp.setTitre(child.getText().split("-")[0].trim());
                         temp.setAuteur(child.getText().split("-")[1].trim());
+                        temp.setDate(date_);
                         resultats.add(temp);
                     }
 

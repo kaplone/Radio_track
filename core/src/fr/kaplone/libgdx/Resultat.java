@@ -5,6 +5,7 @@ package fr.kaplone.libgdx;
  */
 public class Resultat {
 
+    private String date;
     private String heure;
     private String titre;
     private String auteur;
@@ -22,6 +23,21 @@ public class Resultat {
     public Resultat(Fip_stream fip) {
         this.fip = fip;
     }
+
+    public String getDate() {
+        if (this.date != null){
+            return this.date;
+        }
+        else {
+            return fip.getDate();
+        }
+
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
 
     public String getHeure() {
         if (this.heure != null){
