@@ -13,11 +13,11 @@ l'appui sur le bouton "not saved" enregistre localement les informations sur le 
 ![fenêtre principale](04.png)
 
 
-l'appui sur le bouton "not saved" enregistre localement les informations sur le titre :
+l'appui sur le bouton "playlist" en bas à gauche ouvre la liste des pistes référencées :
 ![fenêtre principale](05.png)
 
 
-l'appui sur le bouton "playlist" en bas à gauche ouvre la liste des pistes référencées :
+Les pistes sont présentées par heure et par date. FIP propose des liens supplémentaires :
 ![fenêtre principale](06.png)
 
 
