@@ -33,6 +33,9 @@ public class Radio_Track extends ApplicationAdapter {
 	Texture divergence_ico;
 	Texture fip_ico;
 	Texture barre;
+	Texture trash;
+	Texture play;
+	Texture youtube;
 
 	float fip_w;
 	float fip_h;
@@ -75,7 +78,10 @@ public class Radio_Track extends ApplicationAdapter {
 		radio = new Texture("radio.png");
 		divergence_ico = new Texture("divergence_.jpg");
 		fip_ico = new Texture("fip.png");
-		barre = new Texture("barre_verte.png");
+		barre = new Texture("barre_orange.png");
+		trash = new Texture("trash_grise.png");
+		play = new Texture("play.png");
+		youtube = new Texture("YouTube.png");
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
@@ -141,6 +147,8 @@ public class Radio_Track extends ApplicationAdapter {
 					stage.addActor(scroll_playList);
 				}
 
+				int nb_icons = 0;
+
 				for (String ligne : lignes){
 
 					if (ligne.startsWith("[")) {
@@ -151,6 +159,7 @@ public class Radio_Track extends ApplicationAdapter {
 
 							if (! ids.contains(id)){
 								ids.add(id);
+								vg.addActorAt(0, hg);
 								vgs.add(vg);
 
 								Image im = new Image(barre);
@@ -159,16 +168,18 @@ public class Radio_Track extends ApplicationAdapter {
 								vgs.add(h_barre);
 
 								System.out.println("ajout regulier : VG");
+
+								nb_icons = 0;
 							}
 						}
 
 						id = ligne.substring(1, ligne.length() - 1);
 
 						vg = new VerticalGroup();
-						System.out.println("red = " + vg.getColor().r);
-						System.out.println("green = " + vg.getColor().g);
-						System.out.println("blue = " + vg.getColor().b);
-						System.out.println("alpha = " + vg.getColor().a);
+//						System.out.println("red = " + vg.getColor().r);
+//						System.out.println("green = " + vg.getColor().g);
+//						System.out.println("blue = " + vg.getColor().b);
+//						System.out.println("alpha = " + vg.getColor().a);
 						vg.draw(batch, 1.0f);
 
 						hg = new HorizontalGroup();
@@ -178,7 +189,15 @@ public class Radio_Track extends ApplicationAdapter {
 						Image i = new Image( id.equals("FIP") ? fip_ico : divergence_ico);
 						i.setAlign(Align.left);
 						hg.addActor(i);
-						hg.space(500 - i.getWidth());
+
+						nb_icons ++;
+
+						Image im = new Image(trash);
+						hg.addActor(im);
+
+						nb_icons ++;
+
+						hg.space((500 - (i.getWidth() + im.getWidth())) / nb_icons);
 					}
 
 					else if (ligne.startsWith("date")) {
@@ -187,17 +206,25 @@ public class Radio_Track extends ApplicationAdapter {
 						System.out.println(dateEnCours);
 
 						if (! vgs.isEmpty() && t != null && ! ids.contains(dateEnCours) && ! dateEnCours.equals(dateEnCache)){
-							ids.add(dateEnCours);
+							ids.add(dateEnCache);
 
 							VerticalGroup vg_date = new VerticalGroup();
+							t.setTransform(true);
+							t.scaleBy(0.7f);
+							t.setOrigin(Align.center);
 							vg_date.addActor(t);
 							vgs.add(vg_date);
-							System.out.println("ajout regulier : " + dateEnCours);
+							System.out.println("ajout regulier : " + dateEnCache);
+
+							Image im = new Image(barre);
+							VerticalGroup h_barre = new VerticalGroup();
+							h_barre.addActor(im);
+							vgs.add(h_barre);
 
 						}
 
-						t = new TextButton(dateEnCours , skin, "oval4");
-						t.setName(dateEnCours);
+						t = new TextButton(dateEnCache , skin, "oval4");
+						t.setName(dateEnCache);
 						t.setTouchable(Touchable.disabled);
 
 						dateEnCache = dateEnCours;
@@ -212,7 +239,7 @@ public class Radio_Track extends ApplicationAdapter {
 							tbh = new TextButton(ligne.split(" : ")[1], skin, "oval4");
 							tbh.setTouchable(Touchable.disabled);
 							hg.addActor(tbh);
-							vg.addActor(hg);
+
 						}
 					}
 
@@ -236,9 +263,62 @@ public class Radio_Track extends ApplicationAdapter {
 							vg.addActor(tbp);
 						}
 					}
+					else if (ligne.startsWith("itunes")){
+
+						if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0){
+
+							final String URL = ligne.split(" : ")[1];
+
+							Image im = new Image(play);
+							im.setTouchable(Touchable.enabled);
+
+							nb_icons ++;
+
+							hg.space(nb_icons <= 3 ? 70 : 40);
+							hg.addActorAt(1, im);
+
+							im.addListener(new InputListener() {
+								@Override
+								public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+									Gdx.net.openURI(URL);
+
+									return  true;
+								}
+							});
+						}
+					}
+					else if (ligne.startsWith("youtube")){
+
+						if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0){
+
+							final String URL = ligne.split(" : ")[1];
+
+							Image im = new Image(youtube);
+							im.setTouchable(Touchable.enabled);
+
+							nb_icons ++;
+
+							hg.space(nb_icons <= 3 ? 70 : 40);
+
+							hg.addActorAt(1, im);
+
+							im.addListener(new InputListener() {
+								@Override
+								public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+									Gdx.net.openURI(URL);
+
+									return  true;
+								}
+							});
+						}
+					}
+
 				}
 
 				if (! ids.contains(id)){
+					vg.addActorAt(0, hg);
 					vgs.add(vg);
 
 					System.out.println("ajout final : VG");
@@ -247,10 +327,21 @@ public class Radio_Track extends ApplicationAdapter {
 
 				if (t != null && ! ids.contains(t.getName())){
 					VerticalGroup vg_date = new VerticalGroup();
+
+					t.setTransform(true);
+					t.scaleBy(0.7f);
+					t.setOrigin(Align.center);
+
 					vg_date.addActor(t);
+
 					vgs.add(vg_date);
 
-					System.out.println("ajout final : t.getName()");
+					System.out.println("ajout final : " + t.getName());
+
+					Image im = new Image(barre);
+					VerticalGroup h_barre = new VerticalGroup();
+					h_barre.addActor(im);
+					vgs.add(h_barre);
 				}
 
 				for (int i = vgs.size() -1; i >= 0; i--){
