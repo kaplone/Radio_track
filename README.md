@@ -29,5 +29,16 @@ l'appui sur le bouton "play" ouvre le lien vers Itunes :
 ![fenêtre principale](08.png)
 
 
+
+
+
+
+
+
+
+
+
+
+
 voici l'apk généré :
 [Radio_track.apk](android-debug.apk)
