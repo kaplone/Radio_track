@@ -141,6 +141,7 @@ public class Radio_Track extends ApplicationAdapter {
 				List<String> ids = new ArrayList<>();
 				List<VerticalGroup> vgs = new ArrayList<>();
 				String id = "";
+				String radio = "";
 
 				if (! stage.getActors().contains(scroll_playList, true)){
 					System.out.println("ajout du scroll au stage ...");
@@ -148,6 +149,9 @@ public class Radio_Track extends ApplicationAdapter {
 				}
 
 				int nb_icons = 0;
+
+				Resultat r = new Resultat();
+				r.setYoutube(false);
 
 				for (String ligne : lignes){
 
@@ -159,6 +163,39 @@ public class Radio_Track extends ApplicationAdapter {
 
 							if (! ids.contains(id)){
 								ids.add(id);
+
+								if (! r.isYoutube()){
+
+									Image im = new Image(youtube);
+									im.setTouchable(Touchable.enabled);
+
+									nb_icons ++;
+
+									System.out.println("radio = " + radio + ", nb icones  = " + nb_icons);
+
+									switch (radio){
+										case "FIP" : hg.space(nb_icons <= 3 ? 70 : 40);
+										             break;
+										case "DIVERGENCE FM" : hg.space(nb_icons <= 3 ? 58 : 30);
+											                   break;
+									}
+
+
+									hg.addActorAt(1, im);
+
+									final String URL = String.format("https://www.youtube.com/results?q=%s&sp=%s", concat(r), "CAM%253D");
+
+									im.addListener(new InputListener() {
+										@Override
+										public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+											Gdx.net.openURI(URL);
+
+											return  true;
+										}
+									});
+								}
+
 								vg.addActorAt(0, hg);
 								vgs.add(vg);
 
@@ -171,9 +208,14 @@ public class Radio_Track extends ApplicationAdapter {
 
 								nb_icons = 0;
 							}
+							nb_icons = 0;
 						}
 
-						id = ligne.substring(1, ligne.length() - 1);
+						r = new Resultat();
+						r.setYoutube(false);
+
+						radio = ligne.substring(1, ligne.length() - 1);
+						id = radio;
 
 						vg = new VerticalGroup();
 //						System.out.println("red = " + vg.getColor().r);
@@ -251,6 +293,8 @@ public class Radio_Track extends ApplicationAdapter {
 							tbt = new TextButton(normaliser(ligne.split(" : ")[1]), skin, "oval3");
 							tbt.setTouchable(Touchable.disabled);
 							vg.addActor(tbt);
+
+							r.setTitre(ligne.split(" : ")[1]);
 						}
 					}
 					else if (ligne.startsWith("interprete")){
@@ -261,6 +305,8 @@ public class Radio_Track extends ApplicationAdapter {
 							tbp = new TextButton(normaliser(ligne.split(" : ")[1]), skin, "oval5");
 							tbp.setTouchable(Touchable.disabled);
 							vg.addActor(tbp);
+
+							r.setAuteur(ligne.split(" : ")[1]);
 						}
 					}
 					else if (ligne.startsWith("itunes")){
@@ -274,7 +320,13 @@ public class Radio_Track extends ApplicationAdapter {
 
 							nb_icons ++;
 
-							hg.space(nb_icons <= 3 ? 70 : 40);
+							switch (radio){
+								case "FIP" : hg.space(nb_icons <= 3 ? 70 : 40);
+									break;
+								case "DIVERGENCE FM" : hg.space(nb_icons <= 3 ? 58 : 30);
+									break;
+							}
+
 							hg.addActorAt(1, im);
 
 							im.addListener(new InputListener() {
@@ -290,29 +342,35 @@ public class Radio_Track extends ApplicationAdapter {
 					}
 					else if (ligne.startsWith("youtube")){
 
-						if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0){
+						Image im = new Image(youtube);
+						im.setTouchable(Touchable.enabled);
 
-							final String URL = ligne.split(" : ")[1];
+						nb_icons ++;
 
-							Image im = new Image(youtube);
-							im.setTouchable(Touchable.enabled);
-
-							nb_icons ++;
-
-							hg.space(nb_icons <= 3 ? 70 : 40);
-
-							hg.addActorAt(1, im);
-
-							im.addListener(new InputListener() {
-								@Override
-								public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
-									Gdx.net.openURI(URL);
-
-									return  true;
-								}
-							});
+						switch (radio){
+							case "FIP" : hg.space(nb_icons <= 3 ? 70 : 40);
+								break;
+							case "DIVERGENCE FM" : hg.space(nb_icons <= 3 ? 58 : 30);
+								break;
 						}
+
+						hg.addActorAt(1, im);
+
+						final String URL = ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0 ?
+								           ligne.split(" : ")[1] :
+								           String.format("https://www.youtube.com/results?q=%s&sp=CAM%253D", concat(r));
+
+						im.addListener(new InputListener() {
+							@Override
+							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+								Gdx.net.openURI(URL);
+
+								return  true;
+							}
+						});
+
+						r.setYoutube(true);
 					}
 
 				}
@@ -711,6 +769,33 @@ public class Radio_Track extends ApplicationAdapter {
 	public static void setResultats(List<Resultat> resultats_) {
 		resultats = resultats_;
 		System.out.println("setResultats() : " + resultats.size());
+	}
+
+	private String concat(Resultat r){
+
+		String[] t0 = r.getTitre().split("&");
+		String[] p0 = r.getAuteur().split("&");
+
+		List<String> liste = new ArrayList<>();
+
+		for (String s : t0){
+			liste.addAll(Arrays.asList((s.trim().split(" "))));
+		}
+
+		for (String s : p0){
+			liste.addAll(Arrays.asList((s.trim().split(" "))));
+		}
+
+		String s = "";
+
+		for (int i = 0; i < liste.size() - 1 ; i++){
+			s += liste.get(i) + "+";
+		}
+
+		s += liste.get(liste.size() -1);
+
+		return s;
+
 	}
 
 	private String normaliser(String s){

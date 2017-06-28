@@ -9,7 +9,8 @@ public class Resultat {
     private String heure;
     private String titre;
     private String auteur;
-    private  Fip_stream fip;
+    private Fip_stream fip;
+    private boolean youtube;
 
     public Resultat() {
     }
@@ -57,10 +58,12 @@ public class Resultat {
         if (this.titre != null){
             return this.titre.substring(0, Math.min(this.titre.length(), 38));
         }
-        else {
+        else if (this.fip != null && this.fip.getTitle() != null){
             return fip.getTitle().substring(0, Math.min(this.fip.getTitle().length(), 38));
         }
-
+        else {
+            return "";
+        }
     }
 
     public void setTitre(String titre) {
@@ -71,8 +74,11 @@ public class Resultat {
         if (this.auteur != null){
             return this.auteur.substring(0, Math.min(this.auteur.length(), 38));
         }
-        else {
+        else if (this.fip != null && this.fip.getPerformers() != null){
             return fip.getPerformers().substring(0, Math.min(this.fip.getPerformers().length(), 38));
+        }
+        else {
+            return "";
         }
     }
 
@@ -86,5 +92,13 @@ public class Resultat {
 
     public void setFip(Fip_stream fip) {
         this.fip = fip;
+    }
+
+    public boolean isYoutube() {
+        return youtube;
+    }
+
+    public void setYoutube(boolean youtube) {
+        this.youtube = youtube;
     }
 }
