@@ -130,8 +130,8 @@ public class Radio_Track extends ApplicationAdapter {
 					lignes = file.readString().split("\n");
 				}
 
-				VerticalGroup vg = null;
-				HorizontalGroup hg = null;
+				VerticalGroup vg = new VerticalGroup();
+				HorizontalGroup hg = new HorizontalGroup();
 				boolean group = false;
 
 				TextButton tbh;
@@ -376,10 +376,48 @@ public class Radio_Track extends ApplicationAdapter {
 				}
 
 				if (! ids.contains(id)){
+
+					if (! r.isYoutube()){
+
+						Image im = new Image(youtube);
+						im.setTouchable(Touchable.enabled);
+
+						nb_icons ++;
+
+						System.out.println("radio = " + radio + ", nb icones  = " + nb_icons);
+
+						switch (radio){
+							case "FIP" : hg.space(nb_icons <= 3 ? 70 : 40);
+								break;
+							case "DIVERGENCE FM" : hg.space(nb_icons <= 3 ? 58 : 30);
+								break;
+						}
+
+
+						hg.addActorAt(1, im);
+
+						final String URL = String.format("https://www.youtube.com/results?q=%s&sp=%s", concat(r), "CAM%253D");
+
+						im.addListener(new InputListener() {
+							@Override
+							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+								Gdx.net.openURI(URL);
+
+								return  true;
+							}
+						});
+					}
+
 					vg.addActorAt(0, hg);
 					vgs.add(vg);
 
 					System.out.println("ajout final : VG");
+
+					Image im = new Image(barre);
+					VerticalGroup h_barre = new VerticalGroup();
+					h_barre.addActor(im);
+					vgs.add(h_barre);
 
 				}
 
@@ -396,10 +434,10 @@ public class Radio_Track extends ApplicationAdapter {
 
 					System.out.println("ajout final : " + t.getName());
 
-					Image im = new Image(barre);
-					VerticalGroup h_barre = new VerticalGroup();
-					h_barre.addActor(im);
-					vgs.add(h_barre);
+//					Image im = new Image(barre);
+//					VerticalGroup h_barre = new VerticalGroup();
+//					h_barre.addActor(im);
+//					vgs.add(h_barre);
 				}
 
 				for (int i = vgs.size() -1; i >= 0; i--){
