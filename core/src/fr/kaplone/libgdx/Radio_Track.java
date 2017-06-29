@@ -375,7 +375,7 @@ public class Radio_Track extends ApplicationAdapter {
 
 				}
 
-				if (! ids.contains(id)){
+				if (! ids.isEmpty() && ! ids.contains(id)){
 
 					if (! r.isYoutube()){
 
