@@ -3,20 +3,18 @@ package fr.kaplone.libgdx;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
-import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Json;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -62,7 +60,11 @@ public class Radio_Track extends ApplicationAdapter {
 	private ScrollPane scroll_playList;
 
 	private String filename;
+	private String jsonFilename;
 	private FileHandle file;
+	private FileHandle jsonFile;
+
+	private SimpleDateFormat formater;
 
 	private int page;
 	
@@ -85,6 +87,8 @@ public class Radio_Track extends ApplicationAdapter {
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+
+		formater = new SimpleDateFormat("dd/MM/yyyy");
 
 		page = 1;
 
@@ -126,12 +130,29 @@ public class Radio_Track extends ApplicationAdapter {
 
 				String[] lignes = new String[0];
 
-				if (file.exists()){
-					lignes = file.readString().split("\n");
+				/*
+				 * Le première version diffusée enregistrait les informatione dans un format TXT.
+				 * Son parsage était laborieux (pas de tag de sortie de bloc)
+				 *
+				 * Si des enregistrements dans ce format existent, ils sont convertis au format Json, puis le fichier .txt est supprimé.
+				 */
+
+				if (! jsonFile.exists()){
+
+					if (file.exists()){
+						ConvertTxt2Json.importTxt(file, jsonFile);
+					}
+
+					else {
+						jsonFile.writeString("", true);
+					}
 				}
 
 				VerticalGroup vg = new VerticalGroup();
+				VerticalGroup vg1 = new VerticalGroup();
 				HorizontalGroup hg = new HorizontalGroup();
+				HorizontalGroup hg1 = new HorizontalGroup();
+				HorizontalGroup hg2 = new HorizontalGroup();
 				boolean group = false;
 
 				TextButton tbh;
@@ -143,112 +164,60 @@ public class Radio_Track extends ApplicationAdapter {
 				String id = "";
 				String radio = "";
 
+				String date_courante = "";
+
 				if (! stage.getActors().contains(scroll_playList, true)){
 					System.out.println("ajout du scroll au stage ...");
 					stage.addActor(scroll_playList);
 				}
 
-				int nb_icons = 0;
+                final Json js = new Json();
+				resultats = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
 
-				Resultat r = new Resultat();
-				r.setYoutube(false);
-
-				for (String ligne : lignes){
-
-					if (ligne.startsWith("[")) {
-
-						System.out.println("radio " + id);
-
-						if (group) {
-
-							if (! ids.contains(id)){
-								ids.add(id);
-
-								if (! r.isYoutube()){
-
-									Image im = new Image(youtube);
-									im.setTouchable(Touchable.enabled);
-
-									nb_icons ++;
-
-									System.out.println("radio = " + radio + ", nb icones  = " + nb_icons);
-
-									switch (radio){
-										case "FIP" : hg.space(nb_icons <= 3 ? 70 : 40);
-										             break;
-										case "DIVERGENCE FM" : hg.space(nb_icons <= 3 ? 58 : 30);
-											                   break;
-									}
-
-
-									hg.addActorAt(1, im);
-
-									final String URL = String.format("https://www.youtube.com/results?q=%s&sp=%s", concat(r), "CAM%253D");
-
-									im.addListener(new InputListener() {
-										@Override
-										public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
-											Gdx.net.openURI(URL);
-
-											return  true;
-										}
-									});
-								}
-
-								vg.addActorAt(0, hg);
-								vgs.add(vg);
-
-								Image im = new Image(barre);
-								VerticalGroup h_barre = new VerticalGroup();
-								h_barre.addActor(im);
-								vgs.add(h_barre);
-
-								System.out.println("ajout regulier : VG");
-
-								nb_icons = 0;
-							}
-							nb_icons = 0;
+				Comparator<Resultat> resultatComparator = new Comparator<Resultat>() {
+					@Override
+					public int compare(Resultat resultat, Resultat t1) {
+						try {
+							return formater.parse(t1.getDate()).compareTo(formater.parse(resultat.getDate())) != 0 ?
+									formater.parse(t1.getDate()).compareTo(formater.parse(resultat.getDate())) :
+									t1.getHeure().compareTo(resultat.getHeure());
+						}
+						catch (ParseException pe){
+							return 0;
 						}
 
-						r = new Resultat();
-						r.setYoutube(false);
+					}
+				};
 
-						radio = ligne.substring(1, ligne.length() - 1);
-						id = radio;
+				Collections.sort(resultats, resultatComparator);
+
+				for (Resultat r : resultats){
+
+					if (! r.isDeleted() && ! ids.contains(r.getId())){
+
+						ids.add(r.getId());
 
 						vg = new VerticalGroup();
-//						System.out.println("red = " + vg.getColor().r);
-//						System.out.println("green = " + vg.getColor().g);
-//						System.out.println("blue = " + vg.getColor().b);
-//						System.out.println("alpha = " + vg.getColor().a);
-						vg.draw(batch, 1.0f);
-
+						vg1 = new VerticalGroup();
 						hg = new HorizontalGroup();
+						hg1 = new HorizontalGroup();
+						hg2 = new HorizontalGroup();
+						vg.draw(batch, 1.0f);
+						vg.space(10);
+						vg.expand(true);
 
-						group = true;
 
-						Image i = new Image( id.equals("FIP") ? fip_ico : divergence_ico);
-						i.setAlign(Align.left);
-						hg.addActor(i);
+						if (! date_courante.equals(r.getDate())){
 
-						nb_icons ++;
 
-						Image im = new Image(trash);
-						hg.addActor(im);
+							Image im_barre = new Image(barre);
+							VerticalGroup h_barre_ = new VerticalGroup();
+							h_barre_.addActor(im_barre);
+							vgs.add(h_barre_);
 
-						nb_icons ++;
-
-						hg.space((500 - (i.getWidth() + im.getWidth())) / nb_icons);
-					}
-
-					else if (ligne.startsWith("date")) {
-
-						dateEnCours = ligne.split(" : ")[1];
-						System.out.println(dateEnCours);
-
-						if (! vgs.isEmpty() && t != null && ! ids.contains(dateEnCours) && ! dateEnCours.equals(dateEnCache)){
-							ids.add(dateEnCache);
+							t = new TextButton(r.getDate() , skin, "oval4");
+							t.setName(r.getDate());
+							t.setTouchable(Touchable.disabled);
 
 							VerticalGroup vg_date = new VerticalGroup();
 							t.setTransform(true);
@@ -256,195 +225,117 @@ public class Radio_Track extends ApplicationAdapter {
 							t.setOrigin(Align.center);
 							vg_date.addActor(t);
 							vgs.add(vg_date);
-							System.out.println("ajout regulier : " + dateEnCache);
 
-							Image im = new Image(barre);
-							VerticalGroup h_barre = new VerticalGroup();
-							h_barre.addActor(im);
-							vgs.add(h_barre);
 
+							date_courante = r.getDate();
 						}
 
-						t = new TextButton(dateEnCache , skin, "oval4");
-						t.setName(dateEnCache);
-						t.setTouchable(Touchable.disabled);
 
-						dateEnCache = dateEnCours;
+						Image im = new Image(barre);
+						VerticalGroup h_barre = new VerticalGroup();
+						h_barre.addActor(im);
+						vgs.add(h_barre);
 
-					}
+						Image i = new Image( r.getRadio().equals("FIP") ? fip_ico : divergence_ico);
+						i.setAlign(Align.left);
+						hg.addActor(i);
+						hg.align(Align.left);
 
-					else if (ligne.startsWith("heure")){
+						hg.space(20);
 
-						if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0){
-							id += "-" + ligne.split(" : ")[1];
+//						switch (radio){
+//							case "FIP" : hg.space(nb_icons <= 3 ? 70 : 40);
+//								break;
+//							case "DIVERGENCE FM" : hg.space(nb_icons <= 3 ? 58 : 30);
+//								break;
+//						}
 
-							tbh = new TextButton(ligne.split(" : ")[1], skin, "oval4");
-							tbh.setTouchable(Touchable.disabled);
-							hg.addActor(tbh);
 
-						}
-					}
+						tbh = new TextButton(r.getHeure(), skin, "oval4");
+						tbh.setTouchable(Touchable.disabled);
+						hg.addActor(tbh);
 
-					else if (ligne.startsWith("titre")){
+						hg.space(60);
 
-						if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0){
-							id += "-" + ligne.split(" : ")[1];
 
-							tbt = new TextButton(normaliser(ligne.split(" : ")[1]), skin, "oval3");
-							tbt.setTouchable(Touchable.disabled);
-							vg.addActor(tbt);
+						Image im_yt = new Image(youtube);
+						im_yt.setTouchable(Touchable.enabled);
+						hg.addActor(im_yt);
 
-							r.setTitre(ligne.split(" : ")[1]);
-						}
-					}
-					else if (ligne.startsWith("interprete")){
-
-						if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0){
-							id += "-" + ligne.split(" : ")[1];
-
-							tbp = new TextButton(normaliser(ligne.split(" : ")[1]), skin, "oval5");
-							tbp.setTouchable(Touchable.disabled);
-							vg.addActor(tbp);
-
-							r.setAuteur(ligne.split(" : ")[1]);
-						}
-					}
-					else if (ligne.startsWith("itunes")){
-
-						if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0){
-
-							final String URL = ligne.split(" : ")[1];
-
-							Image im = new Image(play);
-							im.setTouchable(Touchable.enabled);
-
-							nb_icons ++;
-
-							switch (radio){
-								case "FIP" : hg.space(nb_icons <= 3 ? 70 : 40);
-									break;
-								case "DIVERGENCE FM" : hg.space(nb_icons <= 3 ? 58 : 30);
-									break;
+						final Resultat rf = r;
+						im_yt.addListener(new InputListener() {
+							@Override
+							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+								Gdx.net.openURI(rf.getYoutube());
+								return  true;
 							}
+						});
 
-							hg.addActorAt(1, im);
 
-							im.addListener(new InputListener() {
+						if (r.getItunes() != null && r.getItunes().length() > 1){
+
+							Image im_it = new Image(play);
+							im_it.setTouchable(Touchable.enabled);
+							hg.addActor(im_it);
+
+							im_it.addListener(new InputListener() {
 								@Override
 								public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
-									Gdx.net.openURI(URL);
-
+									Gdx.net.openURI(rf.getItunes());
 									return  true;
 								}
 							});
 						}
-					}
-					else if (ligne.startsWith("youtube")){
 
-						Image im = new Image(youtube);
-						im.setTouchable(Touchable.enabled);
+						vg.addActor(hg);
 
-						nb_icons ++;
+						tbt = new TextButton(normaliser(r.getTitre()), skin, "oval3");
+						tbt.setTouchable(Touchable.disabled);
+						vg1.addActor(tbt);
 
-						switch (radio){
-							case "FIP" : hg.space(nb_icons <= 3 ? 70 : 40);
-								break;
-							case "DIVERGENCE FM" : hg.space(nb_icons <= 3 ? 58 : 30);
-								break;
-						}
+						tbp = new TextButton(normaliser(r.getAuteur()), skin, "oval5");
+						tbp.setTouchable(Touchable.disabled);
+						vg1.addActor(tbp);
 
-						hg.addActorAt(1, im);
+						hg1.addActor(vg1);
+						vg.addActor(hg1);
 
-						final String URL = ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0 ?
-								           ligne.split(" : ")[1] :
-								           String.format("https://www.youtube.com/results?q=%s&sp=CAM%253D", concat(r));
+						Image im_tr = new Image(trash);
+						im_tr.setTouchable(Touchable.enabled);
+						im_tr.setAlign(Align.left);
+						hg2.align(Align.left);
+						hg2.fill();
+						hg2.expand(true);
+						hg2.setWidth(300);
+						hg2.addActor(im_tr);
 
-						im.addListener(new InputListener() {
+						im_tr.addListener(new InputListener() {
 							@Override
 							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+								rf.setDeleted(true);
+								jsonFile = Gdx.files.external(jsonFilename);
+								jsonFile.writeString(js.toJson(resultats), false);
 
-								Gdx.net.openURI(URL);
+								InputEvent event1 = new InputEvent();
+								event1.setType(InputEvent.Type.touchDown);
+								playList_actor.fire(event1);
 
 								return  true;
 							}
 						});
+                        vg.align(Align.left);
+						vg.addActor(hg2);
 
-						r.setYoutube(true);
+						vgs.add(vg);
+
 					}
 
 				}
 
-				if (! ids.isEmpty() && ! ids.contains(id)){
 
-					if (! r.isYoutube()){
-
-						Image im = new Image(youtube);
-						im.setTouchable(Touchable.enabled);
-
-						nb_icons ++;
-
-						System.out.println("radio = " + radio + ", nb icones  = " + nb_icons);
-
-						switch (radio){
-							case "FIP" : hg.space(nb_icons <= 3 ? 70 : 40);
-								break;
-							case "DIVERGENCE FM" : hg.space(nb_icons <= 3 ? 58 : 30);
-								break;
-						}
-
-
-						hg.addActorAt(1, im);
-
-						final String URL = String.format("https://www.youtube.com/results?q=%s&sp=%s", concat(r), "CAM%253D");
-
-						im.addListener(new InputListener() {
-							@Override
-							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
-								Gdx.net.openURI(URL);
-
-								return  true;
-							}
-						});
-					}
-
-					vg.addActorAt(0, hg);
-					vgs.add(vg);
-
-					System.out.println("ajout final : VG");
-
-					Image im = new Image(barre);
-					VerticalGroup h_barre = new VerticalGroup();
-					h_barre.addActor(im);
-					vgs.add(h_barre);
-
-				}
-
-				if (t != null && ! ids.contains(t.getName())){
-					VerticalGroup vg_date = new VerticalGroup();
-
-					t.setTransform(true);
-					t.scaleBy(0.7f);
-					t.setOrigin(Align.center);
-
-					vg_date.addActor(t);
-
-					vgs.add(vg_date);
-
-					System.out.println("ajout final : " + t.getName());
-
-//					Image im = new Image(barre);
-//					VerticalGroup h_barre = new VerticalGroup();
-//					h_barre.addActor(im);
-//					vgs.add(h_barre);
-				}
-
-				for (int i = vgs.size() -1; i >= 0; i--){
+				for (int i = 0; i < vgs.size(); i++){
 					table_playList.add(vgs.get(i)).padTop(50).row();
 				}
-
-				System.out.println(vgs.size());
 
 				scroll_playList.setScrollY(0);
 
@@ -771,7 +662,9 @@ public class Radio_Track extends ApplicationAdapter {
 		//table_playList.setDebug(true);
 
 		filename = "radio_track.txt";
+		jsonFilename = "radio_track.json";
 		file = Gdx.files.external(filename);
+		jsonFile = Gdx.files.external(jsonFilename);
 
 	}
 
@@ -782,6 +675,7 @@ public class Radio_Track extends ApplicationAdapter {
 
 		stage.act();
 		stage.draw();
+		//stage.setDebugAll(true);
 
 		batch.begin();
 

@@ -1,16 +1,23 @@
 package fr.kaplone.libgdx;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by kaplone on 23/06/17.
  */
 public class Resultat {
 
+    private String radio;
     private String date;
     private String heure;
     private String titre;
     private String auteur;
+    private String itunes;
+    private String youtube;
     private Fip_stream fip;
-    private boolean youtube;
+    private boolean deleted;
 
     public Resultat() {
     }
@@ -26,6 +33,13 @@ public class Resultat {
     }
 
     public String getDate() {
+
+        System.out.println("_______________début read date_________________");
+        System.out.println(this.getRadio());
+        System.out.println(this.getHeure());
+        System.out.println(this.getTitre());
+        System.out.println(this.date);
+
         if (this.date != null){
             return this.date;
         }
@@ -36,6 +50,9 @@ public class Resultat {
     }
 
     public void setDate(String date) {
+        System.out.println("_______________début set date_________________");
+        System.out.println(date);
+
         this.date = date;
     }
 
@@ -95,10 +112,76 @@ public class Resultat {
     }
 
     public boolean isYoutube() {
-        return youtube;
+        return youtube != null;
     }
 
-    public void setYoutube(boolean youtube) {
+    public String getYoutube() {
+
+        if (youtube != null && youtube.length() > 1){
+            return youtube;
+        }
+        else {
+            return  String.format("https://www.youtube.com/results?q=%s&sp=%s", concat(), "CAM%253D");
+        }
+    }
+
+    public void setYoutube(String youtube) {
         this.youtube = youtube;
+    }
+
+    public String getItunes() {
+        return itunes;
+    }
+
+    public void setItunes(String itunes) {
+        this.itunes = itunes;
+    }
+
+    public String getRadio() {
+        return radio;
+    }
+
+    public void setRadio(String radio) {
+        this.radio = radio;
+    }
+
+    public String getId(){
+
+        return this.getRadio() + this.getDate() + this.getTitre() + this.getAuteur();
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    private String concat(){
+
+        String[] t0 = this.getTitre().split("&");
+        String[] p0 = this.getAuteur().split("&");
+
+        List<String> liste = new ArrayList<>();
+
+        for (String s : t0){
+            liste.addAll(Arrays.asList((s.trim().split(" "))));
+        }
+
+        for (String s : p0){
+            liste.addAll(Arrays.asList((s.trim().split(" "))));
+        }
+
+        String s = "";
+
+        for (int i = 0; i < liste.size() - 1 ; i++){
+            s += liste.get(i) + "+";
+        }
+
+        s += liste.get(liste.size() -1);
+
+        return s;
+
     }
 }
