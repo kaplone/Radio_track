@@ -48,13 +48,13 @@ public class ConvertTxt2Json {
             } else if (ligne.startsWith("titre")) {
 
                 if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0) {
-                    r.setTitre(String.format("%s", ligne.split(" : ")[1]));
+                    r.setTitre(String.format("%s", ligne.split(" : ")[1]).replace("'", " "));
                 }
 
             } else if (ligne.startsWith("interprete")) {
 
                 if (ligne.split(" : ").length > 1 && ligne.split(" : ")[1].trim().length() > 0) {
-                    r.setAuteur(String.format("%s", ligne.split(" : ")[1]));
+                    r.setAuteur(String.format("%s", ligne.split(" : ")[1].replace("'", " ")));
                 }
 
             } else if (ligne.startsWith("itunes")) {

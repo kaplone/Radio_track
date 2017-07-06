@@ -9,7 +9,9 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -61,29 +63,32 @@ public class HttpManager_fip implements HttpResponseListener
             JsonValue temp = premier;
             Fip_stream fs_temp;
 
+            List<Resultat> resultats = new ArrayList<>();
+
+            SimpleDateFormat formater_heure = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat formater_date = new SimpleDateFormat("dd/MM/yyyy");
+
+
+
             while (temp.next() != null){
                 temp = temp.next();
                 if (! temp.getString("embedType").equals("blank")){
-                    fs_temp = new Fip_stream();
-                    fs_temp.read(json_parser, temp);
-                    fip_streams.add(fs_temp);
+
+                    long start = temp.has("start") ? temp.getLong("start") : 0;
+                    Date date = new Date(start * 1000);
+
+                    Resultat r = new Resultat();
+                    r.setRadio("FIP");
+                    r.setHeure(formater_heure.format(date));
+                    r.setDate(formater_date.format(date));
+                    r.setAuteur(temp.has("performers") ? temp.getString("performers").replace("'", " ") : "");
+                    r.setTitre(temp.has("title") ? temp.getString("title").replace("'", " ") : "");
+                    r.setItunes(temp.has("path") ? temp.getString("path") : "");
+                    r.setYoutube(temp.has("lienYoutube") ? temp.getString("lienYoutube") : "");
+
+                    resultats.add(r);
                 }
-
             }
-
-            List<Resultat> resultats = new ArrayList<>();
-            List<Fip_stream> reversed_fs = new ArrayList<>();
-
-            for (int i = fip_streams.size() -1; i >= 0; i--){
-                reversed_fs.add(fip_streams.get(i));
-            }
-
-            for (Fip_stream f : reversed_fs){
-                resultats.add(new Resultat(f));
-            }
-
-            System.out.println("Appel de setResultat()");
-
             Radio_Track.setResultats(resultats);
         }
     }

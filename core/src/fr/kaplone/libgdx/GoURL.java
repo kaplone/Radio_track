@@ -17,6 +17,8 @@ public class GoURL {
             case "divergence" : URL = "http://www.divergence-fm.org/index.php";
                                 String ARGS = "page=antenne_full.php";
 
+                                System.out.println("---> httpmanager");
+
                                 new HttpManager(URL, HttpMethods.GET, "");
                                 System.out.println("break");
                                 break;

@@ -11,7 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,6 +53,7 @@ public class Radio_Track extends ApplicationAdapter {
 	float playList_y;
 
 	static List<Resultat> resultats;
+	List<Resultat> resultatsPlayList;
 
 	private Skin skin;
 	private Skin default_;
@@ -172,7 +175,7 @@ public class Radio_Track extends ApplicationAdapter {
 				}
 
                 final Json js = new Json();
-				resultats = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
+				resultatsPlayList = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
 
 				Comparator<Resultat> resultatComparator = new Comparator<Resultat>() {
 					@Override
@@ -189,9 +192,9 @@ public class Radio_Track extends ApplicationAdapter {
 					}
 				};
 
-				Collections.sort(resultats, resultatComparator);
+				Collections.sort(resultatsPlayList, resultatComparator);
 
-				for (Resultat r : resultats){
+				for (Resultat r : resultatsPlayList){
 
 					if (! r.isDeleted() && ! ids.contains(r.getId())){
 
@@ -314,7 +317,7 @@ public class Radio_Track extends ApplicationAdapter {
 							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 								rf.setDeleted(true);
 								jsonFile = Gdx.files.external(jsonFilename);
-								jsonFile.writeString(js.toJson(resultats), false);
+								jsonFile.writeString(js.prettyPrint(resultatsPlayList), false);
 
 								InputEvent event1 = new InputEvent();
 								event1.setType(InputEvent.Type.touchDown);
@@ -403,6 +406,8 @@ public class Radio_Track extends ApplicationAdapter {
 					stage.addActor(scroll);
 				}
 
+				System.out.println("---> divergence");
+
 
 				GoURL.goUrl("divergence");
 
@@ -472,15 +477,12 @@ public class Radio_Track extends ApplicationAdapter {
 							if (nom.contains("not_saved")){
 								tbb_ = new TextButton("Saved", skin, "oval0");
 
-								Resultat r_ = resultatMap.get(nom);
+								final Json js = new Json();
+								resultats = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
 
+								resultats.add(resultatMap.get(nom));
 
-								file.writeString("[DIVERGENCE FM]\n", true);
-								file.writeString("date : " + r_.getDate() + "\n", true);
-								file.writeString("heure : " + r_.getHeure() + "\n", true);
-								file.writeString("titre : " + r_.getTitre() + "\n", true);
-								file.writeString("interprete : " + r_.getAuteur() + "\n", true);
-								file.writeString("\n", true);
+								jsonFile.writeString(js.prettyPrint(resultats), false);
 
 								tbb_.setName(nom.replace("not_saved", ""));
 							}
@@ -511,6 +513,8 @@ public class Radio_Track extends ApplicationAdapter {
 			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
+				List<VerticalGroup> vgs = new ArrayList<>();
+
 				divergence_w = 360;
 				divergence_h = 200;
 				divergence_x = 175;
@@ -538,6 +542,7 @@ public class Radio_Track extends ApplicationAdapter {
 
 				while (resultats.size() == 0){
                     table.clear();
+
 					try {
 						Thread.sleep(200);
 
@@ -603,17 +608,12 @@ public class Radio_Track extends ApplicationAdapter {
 							if (nom.contains("not_saved")){
 								tbb_ = new TextButton("Saved", skin, "oval0");
 
-								Resultat r_ = resultatMap.get(nom);
+								final Json js = new Json();
+								resultats = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
 
+								resultats.add(resultatMap.get(nom));
 
-								file.writeString("[FIP]\n", true);
-								file.writeString("date : " + r_.getDate() + "\n", true);
-								file.writeString("heure : " + r_.getHeure() + "\n", true);
-								file.writeString("titre : " + r_.getTitre() + "\n", true);
-								file.writeString("interprete : " + r_.getAuteur() + "\n", true);
-								file.writeString("itunes : " + r_.getFip().getPath() + "\n", true);
-								file.writeString("youtube : " + r_.getFip().getLienYoutube() + "\n", true);
-								file.writeString("\n", true);
+								jsonFile.writeString(js.prettyPrint(resultats), false);
 
 								tbb_.setName(nom.replace("not_saved", ""));
 							}
@@ -627,11 +627,24 @@ public class Radio_Track extends ApplicationAdapter {
 						}
 					});
 
-					table.add(vg);
-					table.row();
+					vgs.add(vg);
+
+
+					Image im_barre = new Image(barre);
+
+					VerticalGroup h_barre_ = new VerticalGroup();
+					h_barre_.addActor(im_barre);
+					h_barre_.padTop(40);
+					vgs.add(h_barre_);
 				}
 
+				for (int i = vgs.size() -1; i > 0; i--){
+
+					table.add(vgs.get(i));
+					table.row();
+				}
 				scroll.setScrollY(0);
+
 				return true;
 			}
 		});

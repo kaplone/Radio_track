@@ -1,7 +1,4 @@
 package fr.kaplone.libgdx;
-//
-//import java.time.LocalDateTime;
-//import java.time.ZoneOffset;
 
 
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
@@ -63,11 +60,11 @@ public class Fip_stream implements Json.Serializable{
 
         System.out.println("_______________début read_________________");
 
-        title = jsonMap.has("title") ? jsonMap.getString("title") : "";
+        title = jsonMap.has("title") ? jsonMap.getString("title").replace("'", " ") : "";
         start = jsonMap.has("start") ? jsonMap.getLong("start") : 0;
         end = jsonMap.has("end") ? jsonMap.getLong("end") : 0;
-        authors = jsonMap.has("authors") ? jsonMap.getString("authors") : "";
-        performers = jsonMap.has("performers") ? jsonMap.getString("performers") : "";
+        authors = jsonMap.has("authors") ? jsonMap.getString("authors").replace("'", " ") : "";
+        performers = jsonMap.has("performers") ? jsonMap.getString("performers").replace("'", " ") : "";
         path = jsonMap.has("path") ? jsonMap.getString("path") : "";
         lienYoutube = jsonMap.has("lienYoutube") ? jsonMap.getString("lienYoutube") : "";
         visuelYoutube = jsonMap.has("visuelYoutube") ? jsonMap.getString("visuelYoutube") : "";

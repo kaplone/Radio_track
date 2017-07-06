@@ -29,16 +29,12 @@ public class Resultat {
     }
 
     public Resultat(Fip_stream fip) {
+
         this.fip = fip;
+        this.radio = "FIP";
     }
 
     public String getDate() {
-
-        System.out.println("_______________début read date_________________");
-        System.out.println(this.getRadio());
-        System.out.println(this.getHeure());
-        System.out.println(this.getTitre());
-        System.out.println(this.date);
 
         if (this.date != null){
             return this.date;
@@ -50,8 +46,6 @@ public class Resultat {
     }
 
     public void setDate(String date) {
-        System.out.println("_______________début set date_________________");
-        System.out.println(date);
 
         this.date = date;
     }

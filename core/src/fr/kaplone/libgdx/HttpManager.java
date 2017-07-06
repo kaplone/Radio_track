@@ -78,6 +78,8 @@ public class HttpManager implements HttpResponseListener
             root = reader.parse(out_);
             Array<XmlReader.Element> items = root.getChildrenByNameRecursively("div");
 
+            System.out.println("---> parse");
+
             List<Resultat> resultats = new ArrayList<>();
             Resultat temp = null;
 
@@ -88,22 +90,25 @@ public class HttpManager implements HttpResponseListener
 
             for (XmlReader.Element child : items)
             {
-                    if (child.getAttribute("class").equals("widget-posts-descr hour")){
+                System.out.println(child);
+
+                if (child.getAttribute("class").equals("widget-posts-descr hour")){
+
+
 
                         temp = new Resultat();
+                        temp.setRadio("DIVERGENCE FM");
                         temp.setHeure(child.getText());
 
                     }
                     else if (child.getAttribute("class").equals("widget-posts-descr ")){
-                        temp.setTitre(child.getText().split("-")[0].trim());
-                        temp.setAuteur(child.getText().split("-")[1].trim());
+                        temp.setTitre(child.getText().split(" - ")[0].trim().replace("'", " "));
+                        temp.setAuteur(child.getText().split(" - ")[1].trim().replace("'", " "));
                         temp.setDate(date_);
                         resultats.add(temp);
                     }
 
             }
-
-            System.out.println("Appel de setResultat()");
 
             Radio_Track.setResultats(resultats);
         }
