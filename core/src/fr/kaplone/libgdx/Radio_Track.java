@@ -2,6 +2,7 @@ package fr.kaplone.libgdx;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,6 +38,17 @@ public class Radio_Track extends ApplicationAdapter {
 	Texture play;
 	Texture youtube;
 
+	Texture menu_carres;
+	Texture menu_radio;
+	Texture menu_recherche;
+	Texture menu_playlist;
+	Texture menu_bandeau;
+	Texture menu_options;
+	Texture fond_options;
+
+	Texture case_nue;
+	Texture case_coche;
+
 	float fip_w;
 	float fip_h;
 	float fip_x;
@@ -51,6 +63,22 @@ public class Radio_Track extends ApplicationAdapter {
 	float playList_h;
 	float playList_x;
 	float playList_y;
+
+	float menu_bandeau_w;
+	float menu_bandeau_h;
+	float menu_bandeau_y;
+
+	float menu_icons_h;
+	float menu_icons_w1;
+	float menu_icons_x1;
+	float menu_icons_w2;
+	float menu_icons_x2;
+	float menu_icons_w3;
+	float menu_icons_x3;
+	float menu_icons_y;
+
+	String motif_recherche;
+
 
 	static List<Resultat> resultats;
 	List<Resultat> resultatsPlayList;
@@ -70,6 +98,9 @@ public class Radio_Track extends ApplicationAdapter {
 	private SimpleDateFormat formater;
 
 	private int page;
+
+	private boolean options;
+	private boolean recherche;
 	
 	@Override
 	public void create () {
@@ -88,37 +119,119 @@ public class Radio_Track extends ApplicationAdapter {
 		play = new Texture("play.png");
 		youtube = new Texture("YouTube.png");
 
+		menu_carres = new Texture("carres_menu.png");
+		menu_radio = new Texture("rt_bico.png");
+		menu_recherche = new Texture("recherche.png");
+		menu_playlist = new Texture("playlist_bico.png");
+		menu_bandeau = new Texture("bandeau_menu.png");
+		menu_options = new Texture("bandeau_menu.png");
+		fond_options = new Texture("fond_options.png");
+
+		case_nue = new Texture("case.png");
+		case_coche = new Texture("case_coche.png");
+
 		stage = new Stage();
+
 		Gdx.input.setInputProcessor(stage);
 
 		formater = new SimpleDateFormat("dd/MM/yyyy");
 
+		motif_recherche = "";
+
 		page = 1;
 
 		font = new BitmapFont();
+		font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
 		divergence_w = 540;
 		divergence_h = 300;
 		divergence_x = 75;
-		divergence_y = 850;
+		divergence_y = 700;
 
 		fip_w = 540;
 		fip_h = 300;
 		fip_x = 75;
-		fip_y = 450;
+		fip_y = 250;
 		
 		playList_w = 128;
 		playList_h = 100;
 		playList_x = 20;
-		playList_y = 70;
+		playList_y = 270;
+
+		menu_bandeau_h = 96;
+		menu_bandeau_y = Gdx.graphics.getHeight() - menu_bandeau_h - 2;
+		menu_bandeau_w = Gdx.graphics.getWidth() - 4;
+
+		menu_icons_h = 72;
+		menu_icons_y = Gdx.graphics.getHeight() - menu_icons_h - 12;
+		menu_icons_x1 = 20;
+		menu_icons_w1 = 72;
+		menu_icons_x2 = 72 + menu_icons_x1 + 20;
+		menu_icons_w2 = Gdx.graphics.getWidth() - (72 + menu_icons_x1 + 20) * 2;
+		menu_icons_x3 = Gdx.graphics.getWidth() - 24 - menu_icons_x1;
+		menu_icons_w3 = 24;
+
 
 		final Actor divergence_actor = new Actor();
 		final Actor fip_actor = new Actor();
 		final Actor playList_actor = new Actor();
 		final Actor radio_actor = new Actor();
 
-		playList_actor.setSize(playList_w,playList_h);
-		playList_actor.setPosition(playList_x, playList_y);
+		final Actor menu_actor = new Actor();
+		final Actor menu_recherche_actor = new Actor();
+
+		menu_recherche_actor.setSize(menu_icons_w2, menu_icons_h);
+		menu_recherche_actor.setPosition(menu_icons_x2, menu_icons_y);
+		menu_recherche_actor.addListener(new InputListener(){
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				Gdx.input.setOnscreenKeyboardVisible(true);
+
+				Gdx.input.getTextInput(new Input.TextInputListener() {
+					@Override
+					public void input(String text) {
+						motif_recherche = text;
+						InputEvent event1 = new InputEvent();
+						event1.setType(InputEvent.Type.touchDown);
+						playList_actor.fire(event1);
+					}
+
+					@Override
+					public void canceled() {
+						motif_recherche = "";
+						InputEvent event1 = new InputEvent();
+						event1.setType(InputEvent.Type.touchDown);
+						playList_actor.fire(event1);
+
+					}
+				}, "Recherche dans les titres ou dans les interprètes :", motif_recherche, "Saisie ...");
+
+
+				return true;
+			}
+		});
+
+		stage.addActor(menu_recherche_actor);
+		menu_recherche_actor.setTouchable(Touchable.disabled);
+
+		menu_actor.setSize(menu_icons_w3, menu_icons_h);
+		menu_actor.setPosition(menu_icons_x3, menu_icons_y);
+		menu_actor.addListener(new InputListener(){
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				options = !options;
+				return true;
+			}
+		});
+
+		stage.addActor(menu_actor);
+		menu_actor.setTouchable(Touchable.enabled);
+
+		playList_actor.setSize(menu_icons_w1, menu_icons_h);
+		playList_actor.setPosition(menu_icons_x1, menu_icons_y);
+
+		//playList_actor.setSize(playList_w,playList_h);
+		//playList_actor.setPosition(playList_x, playList_y);
 		playList_actor.addListener(new InputListener(){
 			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -196,55 +309,59 @@ public class Radio_Track extends ApplicationAdapter {
 
 				for (Resultat r : resultatsPlayList){
 
-					if (! r.isDeleted() && ! ids.contains(r.getId())){
+					if (motif_recherche.equals("")
+							|| r.getAuteur().toLowerCase().contains(motif_recherche.toLowerCase())
+							|| r.getTitre().toLowerCase().contains(motif_recherche.toLowerCase())){
 
-						ids.add(r.getId());
+						if (! r.isDeleted() && ! ids.contains(r.getId())){
 
-						vg = new VerticalGroup();
-						vg1 = new VerticalGroup();
-						hg = new HorizontalGroup();
-						hg1 = new HorizontalGroup();
-						hg2 = new HorizontalGroup();
-						vg.draw(batch, 1.0f);
-						vg.space(10);
-						vg.expand(true);
+							ids.add(r.getId());
 
-
-						if (! date_courante.equals(r.getDate())){
-
-
-							Image im_barre = new Image(barre);
-							VerticalGroup h_barre_ = new VerticalGroup();
-							h_barre_.addActor(im_barre);
-							vgs.add(h_barre_);
-
-							t = new TextButton(r.getDate() , skin, "oval4");
-							t.setName(r.getDate());
-							t.setTouchable(Touchable.disabled);
-
-							VerticalGroup vg_date = new VerticalGroup();
-							t.setTransform(true);
-							t.scaleBy(0.7f);
-							t.setOrigin(Align.center);
-							vg_date.addActor(t);
-							vgs.add(vg_date);
+							vg = new VerticalGroup();
+							vg1 = new VerticalGroup();
+							hg = new HorizontalGroup();
+							hg1 = new HorizontalGroup();
+							hg2 = new HorizontalGroup();
+							vg.draw(batch, 1.0f);
+							vg.space(10);
+							vg.expand(true);
 
 
-							date_courante = r.getDate();
-						}
+							if (! date_courante.equals(r.getDate())){
 
 
-						Image im = new Image(barre);
-						VerticalGroup h_barre = new VerticalGroup();
-						h_barre.addActor(im);
-						vgs.add(h_barre);
+								Image im_barre = new Image(barre);
+								VerticalGroup h_barre_ = new VerticalGroup();
+								h_barre_.addActor(im_barre);
+								vgs.add(h_barre_);
 
-						Image i = new Image( r.getRadio().equals("FIP") ? fip_ico : divergence_ico);
-						i.setAlign(Align.left);
-						hg.addActor(i);
-						hg.align(Align.left);
+								t = new TextButton(r.getDate() , skin, "oval4");
+								t.setName(r.getDate());
+								t.setTouchable(Touchable.disabled);
 
-						hg.space(20);
+								VerticalGroup vg_date = new VerticalGroup();
+								t.setTransform(true);
+								t.scaleBy(0.7f);
+								t.setOrigin(Align.center);
+								vg_date.addActor(t);
+								vgs.add(vg_date);
+
+
+								date_courante = r.getDate();
+							}
+
+
+							Image im = new Image(barre);
+							VerticalGroup h_barre = new VerticalGroup();
+							h_barre.addActor(im);
+							vgs.add(h_barre);
+
+							Image i = new Image( r.getRadio().equals("FIP") ? fip_ico : divergence_ico);
+							i.setAlign(Align.left);
+							hg.addActor(i);
+							hg.align(Align.left);
+
+							hg.space(20);
 
 //						switch (radio){
 //							case "FIP" : hg.space(nb_icons <= 3 ? 70 : 40);
@@ -254,85 +371,85 @@ public class Radio_Track extends ApplicationAdapter {
 //						}
 
 
-						tbh = new TextButton(r.getHeure(), skin, "oval4");
-						tbh.setTouchable(Touchable.disabled);
-						hg.addActor(tbh);
+							tbh = new TextButton(r.getHeure(), skin, "oval4");
+							tbh.setTouchable(Touchable.disabled);
+							hg.addActor(tbh);
 
-						hg.space(60);
-
-
-						Image im_yt = new Image(youtube);
-						im_yt.setTouchable(Touchable.enabled);
-						hg.addActor(im_yt);
-
-						final Resultat rf = r;
-						im_yt.addListener(new InputListener() {
-							@Override
-							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-								Gdx.net.openURI(rf.getYoutube());
-								return  true;
-							}
-						});
+							hg.space(60);
 
 
-						if (r.getItunes() != null && r.getItunes().length() > 1){
+							Image im_yt = new Image(youtube);
+							im_yt.setTouchable(Touchable.enabled);
+							hg.addActor(im_yt);
 
-							Image im_it = new Image(play);
-							im_it.setTouchable(Touchable.enabled);
-							hg.addActor(im_it);
-
-							im_it.addListener(new InputListener() {
+							final Resultat rf = r;
+							im_yt.addListener(new InputListener() {
 								@Override
 								public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-									Gdx.net.openURI(rf.getItunes());
+									Gdx.net.openURI(rf.getYoutube());
 									return  true;
 								}
 							});
-						}
 
-						vg.addActor(hg);
 
-						tbt = new TextButton(normaliser(r.getTitre()), skin, "oval3");
-						tbt.setTouchable(Touchable.disabled);
-						vg1.addActor(tbt);
+							if (r.getItunes() != null && r.getItunes().length() > 1){
 
-						tbp = new TextButton(normaliser(r.getAuteur()), skin, "oval5");
-						tbp.setTouchable(Touchable.disabled);
-						vg1.addActor(tbp);
+								Image im_it = new Image(play);
+								im_it.setTouchable(Touchable.enabled);
+								hg.addActor(im_it);
 
-						hg1.addActor(vg1);
-						vg.addActor(hg1);
-
-						Image im_tr = new Image(trash);
-						im_tr.setTouchable(Touchable.enabled);
-						im_tr.setAlign(Align.left);
-						hg2.align(Align.left);
-						hg2.fill();
-						hg2.expand(true);
-						hg2.setWidth(300);
-						hg2.addActor(im_tr);
-
-						im_tr.addListener(new InputListener() {
-							@Override
-							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-								rf.setDeleted(true);
-								jsonFile = Gdx.files.external(jsonFilename);
-								jsonFile.writeString(js.prettyPrint(resultatsPlayList), false);
-
-								InputEvent event1 = new InputEvent();
-								event1.setType(InputEvent.Type.touchDown);
-								playList_actor.fire(event1);
-
-								return  true;
+								im_it.addListener(new InputListener() {
+									@Override
+									public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+										Gdx.net.openURI(rf.getItunes());
+										return  true;
+									}
+								});
 							}
-						});
-                        vg.align(Align.left);
-						vg.addActor(hg2);
 
-						vgs.add(vg);
+							vg.addActor(hg);
 
+							tbt = new TextButton(normaliser(r.getTitre()), skin, "oval3");
+							tbt.setTouchable(Touchable.disabled);
+							vg1.addActor(tbt);
+
+							tbp = new TextButton(normaliser(r.getAuteur()), skin, "oval5");
+							tbp.setTouchable(Touchable.disabled);
+							vg1.addActor(tbp);
+
+							hg1.addActor(vg1);
+							vg.addActor(hg1);
+
+							Image im_tr = new Image(trash);
+							im_tr.setTouchable(Touchable.enabled);
+							im_tr.setAlign(Align.left);
+							hg2.align(Align.left);
+							hg2.fill();
+							hg2.expand(true);
+							hg2.setWidth(300);
+							hg2.addActor(im_tr);
+
+							im_tr.addListener(new InputListener() {
+								@Override
+								public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+									rf.setDeleted(true);
+									jsonFile = Gdx.files.external(jsonFilename);
+									jsonFile.writeString(js.prettyPrint(resultatsPlayList), false);
+
+									InputEvent event1 = new InputEvent();
+									event1.setType(InputEvent.Type.touchDown);
+									playList_actor.fire(event1);
+
+									return  true;
+								}
+							});
+							vg.align(Align.left);
+							vg.addActor(hg2);
+
+							vgs.add(vg);
+
+						}
 					}
-
 				}
 
 
@@ -348,13 +465,18 @@ public class Radio_Track extends ApplicationAdapter {
 				playList_actor.setTouchable(Touchable.disabled);
 				divergence_actor.setTouchable(Touchable.disabled);
 				fip_actor.setTouchable(Touchable.disabled);
+				menu_recherche_actor.setTouchable(Touchable.enabled);
 
 				return true;
 			}
 		});
 
-		radio_actor.setSize(playList_w,playList_h);
-		radio_actor.setPosition(playList_x, playList_y);
+
+		radio_actor.setSize(menu_icons_w1, menu_icons_h);
+		radio_actor.setPosition(menu_icons_x1, menu_icons_y);
+
+//		radio_actor.setSize(playList_w,playList_h);
+//		radio_actor.setPosition(playList_x, playList_y);
 		radio_actor.setTouchable(Touchable.disabled);
 		radio_actor.addListener(new InputListener(){
 			@Override
@@ -369,6 +491,8 @@ public class Radio_Track extends ApplicationAdapter {
 				playList_actor.setTouchable(Touchable.enabled);
 				divergence_actor.setTouchable(Touchable.enabled);
 				fip_actor.setTouchable(Touchable.enabled);
+
+				menu_recherche_actor.setTouchable(Touchable.disabled);
 
 
 				return true;
@@ -387,12 +511,12 @@ public class Radio_Track extends ApplicationAdapter {
 				divergence_w = 650;
 				divergence_h = 375;
 				divergence_x = 30;
-				divergence_y = 850;
+				divergence_y = 800;
 
 				fip_w = 360;
 				fip_h = 200;
 				fip_x = 175;
-				fip_y = 50;
+				fip_y = 100;
 
 				fip_actor.setSize(fip_w,fip_h);
 				fip_actor.setPosition(fip_x,fip_y);
@@ -518,12 +642,12 @@ public class Radio_Track extends ApplicationAdapter {
 				divergence_w = 360;
 				divergence_h = 200;
 				divergence_x = 175;
-				divergence_y = 50;
+				divergence_y = 100;
 
 				fip_w = 650;
 				fip_h = 375;
 				fip_x = 30;
-				fip_y = 850;
+				fip_y = 800;
 
 				divergence_actor.setSize(divergence_w,divergence_h);
 				divergence_actor.setPosition(divergence_x,divergence_y);
@@ -648,6 +772,8 @@ public class Radio_Track extends ApplicationAdapter {
 				return true;
 			}
 		});
+
+
 		fip_actor.setTouchable(Touchable.enabled);
 		stage.addActor(fip_actor);
 
@@ -670,8 +796,8 @@ public class Radio_Track extends ApplicationAdapter {
 
         scroll_playList = new ScrollPane(table_playList);
         scroll_playList.setWidth(Gdx.graphics.getWidth() - 20);
-        scroll_playList.setHeight(1000);
-        scroll_playList.setPosition(10, 200);
+        scroll_playList.setHeight(Gdx.graphics.getHeight() - 50 - menu_bandeau_h);
+        scroll_playList.setPosition(10, 20);
 		//table_playList.setDebug(true);
 
 		filename = "radio_track.txt";
@@ -692,14 +818,43 @@ public class Radio_Track extends ApplicationAdapter {
 
 		batch.begin();
 
+		batch.draw(menu_bandeau, 2, menu_bandeau_y, menu_bandeau_w, menu_bandeau_h);
+		batch.draw(menu_carres, menu_icons_x3, menu_icons_y, menu_icons_w3, menu_icons_h);
+
 		switch (page){
 			case 1 : batch.draw(divergence, divergence_x, divergence_y, divergence_w, divergence_h);
 				     batch.draw(fip, fip_x, fip_y, fip_w, fip_h);
-					 batch.draw(playList, playList_x, playList_y, playList_w, playList_h);
+				     batch.draw(menu_playlist, menu_icons_x1, menu_icons_y, menu_icons_w1, menu_icons_h);
+
+					 if (options) {
+						batch.draw(fond_options, 200, Gdx.graphics.getHeight() - 120 - (Gdx.graphics.getHeight() - 850), Gdx.graphics.getWidth() - 230, Gdx.graphics.getHeight() - 850);
+						font.getData().setScale(3.2f);
+					 }
+
 					 break;
-			case 2 : batch.draw(radio, playList_x, playList_y, playList_w, playList_h);
+			case 2 : batch.draw(menu_radio, menu_icons_x1, menu_icons_y, menu_icons_w1, menu_icons_h);
+				     batch.draw(menu_recherche, menu_icons_x2, menu_icons_y, menu_icons_w2, menu_icons_h);
+				     font.getData().setScale(4.1f);
+				     font.draw(batch, motif_recherche, 150, Gdx.graphics.getHeight() - 20);
+
+					 if (options) {
+						batch.draw(fond_options, 200, Gdx.graphics.getHeight() - 120 -(Gdx.graphics.getHeight() - 850), Gdx.graphics.getWidth() - 230, Gdx.graphics.getHeight() - 850);
+						font.getData().setScale(3.2f);
+						batch.draw(divergence, 250, Gdx.graphics.getHeight() - 120 - 100, 120, 80);
+						batch.draw(fip, 250, Gdx.graphics.getHeight() - 120 - 250, 120, 80);
+						batch.draw(trash, 265, Gdx.graphics.getHeight() - 120 - 390, 80, 80);
+						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 50);
+						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 200);
+						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 350);
+						batch.draw(case_nue, 585, Gdx.graphics.getHeight() - 120 - 100, 80, 80);
+						batch.draw(case_nue, 585, Gdx.graphics.getHeight() - 120 - 250, 80, 80);
+						batch.draw(case_nue, 585, Gdx.graphics.getHeight() - 120 - 400, 80, 80);
+					 }
+
 			         break;
 		}
+
+
 
 		batch.end();
 	}
