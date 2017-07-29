@@ -45,9 +45,32 @@ public class Radio_Track extends ApplicationAdapter {
 	Texture menu_bandeau;
 	Texture menu_options;
 	Texture fond_options;
+	Texture fond_options_haut;
+	Texture no_trash;
+	Texture menu_play;
+	Texture menu_yt;
+	Texture menu_horloge;
+	Texture menu_calendrier;
 
 	Texture case_nue;
 	Texture case_coche;
+	Texture case_1;
+	Texture case_2;
+	Texture case_3;
+	Texture case_4;
+	Texture case_5;
+	Texture case_6;
+	Texture case_7;
+	Texture case_8;
+
+	Cases c1;
+	Cases c2;
+	Cases c3;
+	Cases c4;
+	Cases c5;
+	Cases c6;
+	Cases c7;
+	Cases c8;
 
 	float fip_w;
 	float fip_h;
@@ -105,6 +128,16 @@ public class Radio_Track extends ApplicationAdapter {
 	@Override
 	public void create () {
 
+		stage = new Stage();
+
+		final Actor divergence_actor = new Actor();
+		final Actor fip_actor = new Actor();
+		final Actor playList_actor = new Actor();
+		final Actor radio_actor = new Actor();
+
+		final Actor menu_actor = new Actor();
+		final Actor menu_recherche_actor = new Actor();
+
 		skin = new Skin(Gdx.files.internal("lgdxsui/lgdxs-ui.json"));
 		default_ = new Skin(Gdx.files.internal("default/uiskin.json"));
 		batch = new SpriteBatch();
@@ -126,11 +159,197 @@ public class Radio_Track extends ApplicationAdapter {
 		menu_bandeau = new Texture("bandeau_menu.png");
 		menu_options = new Texture("bandeau_menu.png");
 		fond_options = new Texture("fond_options.png");
+		fond_options_haut = new Texture("fond_options_haut.png");
+		no_trash = new Texture("no-trash.png");
+		menu_play = new Texture("play.png");
+		menu_yt = new Texture("YouTube.png");
+		menu_horloge = new Texture("horloge.png");
+		menu_calendrier = new Texture("calendrier.png");
 
 		case_nue = new Texture("case.png");
 		case_coche = new Texture("case_coche.png");
 
-		stage = new Stage();
+		c1 =new Cases(true);
+		c2 =new Cases(true);
+		c3 =new Cases(false);
+		c4 =new Cases(false);
+		c5 =new Cases(true);
+		c6 =new Cases(true);
+		c7 =new Cases(true);
+		c8 =new Cases(true);
+
+		case_1 = new Texture(c1.getpath());
+		case_2 = new Texture(c2.getpath());
+		case_3 = new Texture(c3.getpath());
+		case_4 = new Texture(c4.getpath());
+		case_5 = new Texture(c5.getpath());
+		case_6 = new Texture(c6.getpath());
+		case_7 = new Texture(c7.getpath());
+		case_8 = new Texture(c8.getpath());
+
+		final Actor case_1_actor = new Actor();
+		case_1_actor.setSize(80, 80);
+		case_1_actor.setPosition(585, Gdx.graphics.getHeight() - 120 - 100);
+		case_1_actor.addListener(new InputListener(){
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				c1.touch();
+				case_1 = new Texture(c1.getpath());
+
+				InputEvent event1 = new InputEvent();
+				event1.setType(InputEvent.Type.touchDown);
+				playList_actor.fire(event1);
+
+				return true;
+			}
+		});
+
+		case_1_actor.setTouchable(Touchable.disabled);
+		stage.addActor(case_1_actor);
+
+		final Actor case_2_actor = new Actor();
+		case_2_actor.setSize(80, 80);
+		case_2_actor.setPosition(585, Gdx.graphics.getHeight() - 120 - 230);
+		case_2_actor.addListener(new InputListener(){
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				c2.touch();
+				case_2 = new Texture(c2.getpath());
+
+				InputEvent event1 = new InputEvent();
+				event1.setType(InputEvent.Type.touchDown);
+				playList_actor.fire(event1);
+
+				return true;
+			}
+		});
+
+		case_2_actor.setTouchable(Touchable.disabled);
+		stage.addActor(case_2_actor);
+
+		final Actor case_3_actor = new Actor();
+		case_3_actor.setSize(80, 80);
+		case_3_actor.setPosition(585, Gdx.graphics.getHeight() - 120 - 360);
+		case_3_actor.addListener(new InputListener(){
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				c3.touch();
+				case_3 = new Texture(c3.getpath());
+				c4.disable();
+				case_4 = new Texture(c4.getpath());
+
+				InputEvent event1 = new InputEvent();
+				event1.setType(InputEvent.Type.touchDown);
+				playList_actor.fire(event1);
+
+				return true;
+			}
+		});
+
+		case_3_actor.setTouchable(Touchable.disabled);
+		stage.addActor(case_3_actor);
+
+		final Actor case_4_actor = new Actor();
+		case_4_actor.setSize(80, 80);
+		case_4_actor.setPosition(585, Gdx.graphics.getHeight() - 120 - 490);
+		case_4_actor.addListener(new InputListener(){
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				c4.touch();
+				case_4 = new Texture(c4.getpath());
+				c3.disable();
+				case_3 = new Texture(c3.getpath());
+
+				InputEvent event1 = new InputEvent();
+				event1.setType(InputEvent.Type.touchDown);
+				playList_actor.fire(event1);
+
+				return true;
+			}
+		});
+
+		case_4_actor.setTouchable(Touchable.disabled);
+		stage.addActor(case_4_actor);
+
+		final Actor case_5_actor = new Actor();
+		case_5_actor.setSize(80, 80);
+		case_5_actor.setPosition(585, Gdx.graphics.getHeight() - 120 - 620);
+		case_5_actor.addListener(new InputListener(){
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				c5.touch();
+				case_5 = new Texture(c5.getpath());
+
+				InputEvent event1 = new InputEvent();
+				event1.setType(InputEvent.Type.touchDown);
+				playList_actor.fire(event1);
+
+				return true;
+			}
+		});
+
+		case_5_actor.setTouchable(Touchable.disabled);
+		stage.addActor(case_5_actor);
+
+		final Actor case_6_actor = new Actor();
+		case_6_actor.setSize(80, 80);
+		case_6_actor.setPosition(585, Gdx.graphics.getHeight() - 120 - 750);
+		case_6_actor.addListener(new InputListener(){
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				c6.touch();
+				case_6 = new Texture(c6.getpath());
+
+				InputEvent event1 = new InputEvent();
+				event1.setType(InputEvent.Type.touchDown);
+				playList_actor.fire(event1);
+
+				return true;
+			}
+		});
+
+		case_6_actor.setTouchable(Touchable.disabled);
+		stage.addActor(case_6_actor);
+
+		final Actor case_7_actor = new Actor();
+		case_7_actor.setSize(80, 80);
+		case_7_actor.setPosition(585, Gdx.graphics.getHeight() - 120 - 880);
+		case_7_actor.addListener(new InputListener(){
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				c7.touch();
+				case_7 = new Texture(c7.getpath());
+
+				InputEvent event1 = new InputEvent();
+				event1.setType(InputEvent.Type.touchDown);
+				playList_actor.fire(event1);
+
+				return true;
+			}
+		});
+
+		case_7_actor.setTouchable(Touchable.disabled);
+		stage.addActor(case_7_actor);
+
+		final Actor case_8_actor = new Actor();
+		case_8_actor.setSize(80, 80);
+		case_8_actor.setPosition(585, Gdx.graphics.getHeight() - 120 - 1010);
+		case_8_actor.addListener(new InputListener(){
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				c8.touch();
+				case_8 = new Texture(c8.getpath());
+
+				InputEvent event1 = new InputEvent();
+				event1.setType(InputEvent.Type.touchDown);
+				playList_actor.fire(event1);
+
+				return true;
+			}
+		});
+
+		case_8_actor.setTouchable(Touchable.disabled);
+		stage.addActor(case_8_actor);
 
 		Gdx.input.setInputProcessor(stage);
 
@@ -170,15 +389,6 @@ public class Radio_Track extends ApplicationAdapter {
 		menu_icons_w2 = Gdx.graphics.getWidth() - (72 + menu_icons_x1 + 20) * 2;
 		menu_icons_x3 = Gdx.graphics.getWidth() - 24 - menu_icons_x1;
 		menu_icons_w3 = 24;
-
-
-		final Actor divergence_actor = new Actor();
-		final Actor fip_actor = new Actor();
-		final Actor playList_actor = new Actor();
-		final Actor radio_actor = new Actor();
-
-		final Actor menu_actor = new Actor();
-		final Actor menu_recherche_actor = new Actor();
 
 		menu_recherche_actor.setSize(menu_icons_w2, menu_icons_h);
 		menu_recherche_actor.setPosition(menu_icons_x2, menu_icons_y);
@@ -220,6 +430,15 @@ public class Radio_Track extends ApplicationAdapter {
 			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				options = !options;
+				scroll_playList.setTouchable(options ? Touchable.disabled : Touchable.enabled);
+				case_1_actor.setTouchable(options ? Touchable.enabled : Touchable.disabled);
+				case_2_actor.setTouchable(options ? Touchable.enabled : Touchable.disabled);
+				case_3_actor.setTouchable(options ? Touchable.enabled : Touchable.disabled);
+				case_4_actor.setTouchable(options ? Touchable.enabled : Touchable.disabled);
+				case_5_actor.setTouchable(options ? Touchable.enabled : Touchable.disabled);
+				case_6_actor.setTouchable(options ? Touchable.enabled : Touchable.disabled);
+				case_7_actor.setTouchable(options ? Touchable.enabled : Touchable.disabled);
+				case_8_actor.setTouchable(options ? Touchable.enabled : Touchable.disabled);
 				return true;
 			}
 		});
@@ -309,59 +528,60 @@ public class Radio_Track extends ApplicationAdapter {
 
 				for (Resultat r : resultatsPlayList){
 
-					if (motif_recherche.equals("")
-							|| r.getAuteur().toLowerCase().contains(motif_recherche.toLowerCase())
-							|| r.getTitre().toLowerCase().contains(motif_recherche.toLowerCase())){
+					if ( r.getRadio().equals("FIP") && c2.isChecked() || r.getRadio().equals("DIVERGENCE FM") && c1.isChecked()) {
+						if (motif_recherche.equals("")
+								|| r.getAuteur().toLowerCase().contains(motif_recherche.toLowerCase())
+								|| r.getTitre().toLowerCase().contains(motif_recherche.toLowerCase())){
 
-						if (! r.isDeleted() && ! ids.contains(r.getId())){
+							if (! ids.contains(r.getId()) && (r.isDeleted() && c4.isChecked() || ! r.isDeleted() && ! c4.isChecked())){
 
-							ids.add(r.getId());
+								ids.add(r.getId());
 
-							vg = new VerticalGroup();
-							vg1 = new VerticalGroup();
-							hg = new HorizontalGroup();
-							hg1 = new HorizontalGroup();
-							hg2 = new HorizontalGroup();
-							vg.draw(batch, 1.0f);
-							vg.space(10);
-							vg.expand(true);
-
-
-							if (! date_courante.equals(r.getDate())){
+								vg = new VerticalGroup();
+								vg1 = new VerticalGroup();
+								hg = new HorizontalGroup();
+								hg1 = new HorizontalGroup();
+								hg2 = new HorizontalGroup();
+								vg.draw(batch, 1.0f);
+								vg.space(10);
+								vg.expand(true);
 
 
-								Image im_barre = new Image(barre);
-								VerticalGroup h_barre_ = new VerticalGroup();
-								h_barre_.addActor(im_barre);
-								vgs.add(h_barre_);
-
-								t = new TextButton(r.getDate() , skin, "oval4");
-								t.setName(r.getDate());
-								t.setTouchable(Touchable.disabled);
-
-								VerticalGroup vg_date = new VerticalGroup();
-								t.setTransform(true);
-								t.scaleBy(0.7f);
-								t.setOrigin(Align.center);
-								vg_date.addActor(t);
-								vgs.add(vg_date);
+								if (! date_courante.equals(r.getDate()) && c8.isChecked()){
 
 
-								date_courante = r.getDate();
-							}
+									Image im_barre = new Image(barre);
+									VerticalGroup h_barre_ = new VerticalGroup();
+									h_barre_.addActor(im_barre);
+									vgs.add(h_barre_);
+
+									t = new TextButton(r.getDate() , skin, "oval4");
+									t.setName(r.getDate());
+									t.setTouchable(Touchable.disabled);
+
+									VerticalGroup vg_date = new VerticalGroup();
+									t.setTransform(true);
+									t.scaleBy(0.7f);
+									t.setOrigin(Align.center);
+									vg_date.addActor(t);
+									vgs.add(vg_date);
 
 
-							Image im = new Image(barre);
-							VerticalGroup h_barre = new VerticalGroup();
-							h_barre.addActor(im);
-							vgs.add(h_barre);
+									date_courante = r.getDate();
+								}
 
-							Image i = new Image( r.getRadio().equals("FIP") ? fip_ico : divergence_ico);
-							i.setAlign(Align.left);
-							hg.addActor(i);
-							hg.align(Align.left);
 
-							hg.space(20);
+								Image im = new Image(barre);
+								VerticalGroup h_barre = new VerticalGroup();
+								h_barre.addActor(im);
+								vgs.add(h_barre);
+
+								Image i = new Image( r.getRadio().equals("FIP") ? fip_ico : divergence_ico);
+								i.setAlign(Align.left);
+								hg.addActor(i);
+								hg.align(Align.left);
+
+								hg.space(20);
 
 //						switch (radio){
 //							case "FIP" : hg.space(nb_icons <= 3 ? 70 : 40);
@@ -370,84 +590,116 @@ public class Radio_Track extends ApplicationAdapter {
 //								break;
 //						}
 
+                                if (c7.isChecked()){
+									tbh = new TextButton(r.getHeure(), skin, "oval4");
+									tbh.setTouchable(Touchable.disabled);
+									hg.addActor(tbh);
 
-							tbh = new TextButton(r.getHeure(), skin, "oval4");
-							tbh.setTouchable(Touchable.disabled);
-							hg.addActor(tbh);
-
-							hg.space(60);
-
-
-							Image im_yt = new Image(youtube);
-							im_yt.setTouchable(Touchable.enabled);
-							hg.addActor(im_yt);
-
-							final Resultat rf = r;
-							im_yt.addListener(new InputListener() {
-								@Override
-								public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-									Gdx.net.openURI(rf.getYoutube());
-									return  true;
+									hg.space(60);
 								}
-							});
 
+								final Resultat rf = r;
 
-							if (r.getItunes() != null && r.getItunes().length() > 1){
+                                if(c6.isChecked()){
+									Image im_yt = new Image(youtube);
+									im_yt.setTouchable(Touchable.enabled);
+									hg.addActor(im_yt);
+									im_yt.addListener(new InputListener() {
+										@Override
+										public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+											Gdx.net.openURI(rf.getYoutube());
+											return  true;
+										}
+									});
+								}
 
-								Image im_it = new Image(play);
-								im_it.setTouchable(Touchable.enabled);
-								hg.addActor(im_it);
+								if (c5.isChecked() && r.getItunes() != null && r.getItunes().length() > 1){
 
-								im_it.addListener(new InputListener() {
-									@Override
-									public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-										Gdx.net.openURI(rf.getItunes());
-										return  true;
-									}
-								});
+									Image im_it = new Image(play);
+									im_it.setTouchable(Touchable.enabled);
+									hg.addActor(im_it);
+
+									im_it.addListener(new InputListener() {
+										@Override
+										public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+											Gdx.net.openURI(rf.getItunes());
+											return  true;
+										}
+									});
+								}
+
+								vg.addActor(hg);
+
+								tbt = new TextButton(normaliser(r.getTitre()), skin, "oval3");
+								tbt.setTouchable(Touchable.disabled);
+								vg1.addActor(tbt);
+
+								tbp = new TextButton(normaliser(r.getAuteur()), skin, "oval5");
+								tbp.setTouchable(Touchable.disabled);
+								vg1.addActor(tbp);
+
+								hg1.addActor(vg1);
+								vg.addActor(hg1);
+
+								if (c3.isChecked()){
+									Image im_tr = new Image(trash);
+									im_tr.setTouchable(Touchable.enabled);
+									im_tr.setAlign(Align.left);
+									hg2.align(Align.left);
+									hg2.fill();
+									hg2.expand(true);
+									hg2.setWidth(300);
+									hg2.addActor(im_tr);
+
+									im_tr.addListener(new InputListener() {
+										@Override
+										public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+											rf.setDeleted(true);
+											jsonFile = Gdx.files.external(jsonFilename);
+											jsonFile.writeString(js.prettyPrint(resultatsPlayList), false);
+
+											InputEvent event1 = new InputEvent();
+											event1.setType(InputEvent.Type.touchDown);
+											playList_actor.fire(event1);
+
+											return  true;
+										}
+									});
+									vg.align(Align.left);
+									vg.addActor(hg2);
+								}
+
+								if (c4.isChecked()){
+									Image im_tr = new Image(no_trash);
+									im_tr.setTouchable(Touchable.enabled);
+									im_tr.setAlign(Align.left);
+									hg2.align(Align.left);
+									hg2.fill();
+									hg2.expand(true);
+									hg2.setWidth(300);
+									hg2.addActor(im_tr);
+
+									im_tr.addListener(new InputListener() {
+										@Override
+										public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+											rf.setDeleted(false);
+											jsonFile = Gdx.files.external(jsonFilename);
+											jsonFile.writeString(js.prettyPrint(resultatsPlayList), false);
+
+											InputEvent event1 = new InputEvent();
+											event1.setType(InputEvent.Type.touchDown);
+											playList_actor.fire(event1);
+
+											return  true;
+										}
+									});
+									vg.align(Align.left);
+									vg.addActor(hg2);
+								}
+
+								vgs.add(vg);
+
 							}
-
-							vg.addActor(hg);
-
-							tbt = new TextButton(normaliser(r.getTitre()), skin, "oval3");
-							tbt.setTouchable(Touchable.disabled);
-							vg1.addActor(tbt);
-
-							tbp = new TextButton(normaliser(r.getAuteur()), skin, "oval5");
-							tbp.setTouchable(Touchable.disabled);
-							vg1.addActor(tbp);
-
-							hg1.addActor(vg1);
-							vg.addActor(hg1);
-
-							Image im_tr = new Image(trash);
-							im_tr.setTouchable(Touchable.enabled);
-							im_tr.setAlign(Align.left);
-							hg2.align(Align.left);
-							hg2.fill();
-							hg2.expand(true);
-							hg2.setWidth(300);
-							hg2.addActor(im_tr);
-
-							im_tr.addListener(new InputListener() {
-								@Override
-								public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-									rf.setDeleted(true);
-									jsonFile = Gdx.files.external(jsonFilename);
-									jsonFile.writeString(js.prettyPrint(resultatsPlayList), false);
-
-									InputEvent event1 = new InputEvent();
-									event1.setType(InputEvent.Type.touchDown);
-									playList_actor.fire(event1);
-
-									return  true;
-								}
-							});
-							vg.align(Align.left);
-							vg.addActor(hg2);
-
-							vgs.add(vg);
-
 						}
 					}
 				}
@@ -838,17 +1090,34 @@ public class Radio_Track extends ApplicationAdapter {
 				     font.draw(batch, motif_recherche, 150, Gdx.graphics.getHeight() - 20);
 
 					 if (options) {
-						batch.draw(fond_options, 200, Gdx.graphics.getHeight() - 120 -(Gdx.graphics.getHeight() - 850), Gdx.graphics.getWidth() - 230, Gdx.graphics.getHeight() - 850);
+						batch.draw(fond_options_haut, 200, Gdx.graphics.getHeight() - 120 -(Gdx.graphics.getHeight() - 200), Gdx.graphics.getWidth() - 230, Gdx.graphics.getHeight() - 200);
 						font.getData().setScale(3.2f);
-						batch.draw(divergence, 250, Gdx.graphics.getHeight() - 120 - 100, 120, 80);
-						batch.draw(fip, 250, Gdx.graphics.getHeight() - 120 - 250, 120, 80);
-						batch.draw(trash, 265, Gdx.graphics.getHeight() - 120 - 390, 80, 80);
+						batch.draw(divergence, 		250, Gdx.graphics.getHeight() - 120 - 100,  120, 80);
+						batch.draw(fip, 			250, Gdx.graphics.getHeight() - 120 - 230,  120, 80);
+						batch.draw(trash, 			265, Gdx.graphics.getHeight() - 120 - 360,  80,  80);
+						batch.draw(no_trash, 		265, Gdx.graphics.getHeight() - 120 - 490,  80,  80);
+						batch.draw(menu_play, 		265, Gdx.graphics.getHeight() - 120 - 620,  80,  80);
+						batch.draw(menu_yt, 		220, Gdx.graphics.getHeight() - 120 - 750,  150, 80);
+						batch.draw(menu_horloge, 	265, Gdx.graphics.getHeight() - 120 - 880,  80,  80);
+						batch.draw(menu_calendrier, 265, Gdx.graphics.getHeight() - 120 - 1010, 80,  80);
+
 						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 50);
-						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 200);
-						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 350);
-						batch.draw(case_nue, 585, Gdx.graphics.getHeight() - 120 - 100, 80, 80);
-						batch.draw(case_nue, 585, Gdx.graphics.getHeight() - 120 - 250, 80, 80);
-						batch.draw(case_nue, 585, Gdx.graphics.getHeight() - 120 - 400, 80, 80);
+						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 180);
+						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 310);
+						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 440);
+						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 570);
+						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 700);
+						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 830);
+						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 960);
+
+						batch.draw(case_1, 585, Gdx.graphics.getHeight() - 120 - 100, 80, 80);
+						batch.draw(case_2, 585, Gdx.graphics.getHeight() - 120 - 230, 80, 80);
+						batch.draw(case_3, 585, Gdx.graphics.getHeight() - 120 - 360, 80, 80);
+						batch.draw(case_4, 585, Gdx.graphics.getHeight() - 120 - 490, 80, 80);
+						batch.draw(case_5, 585, Gdx.graphics.getHeight() - 120 - 620, 80, 80);
+						batch.draw(case_6, 585, Gdx.graphics.getHeight() - 120 - 750, 80, 80);
+						batch.draw(case_7, 585, Gdx.graphics.getHeight() - 120 - 880, 80, 80);
+						batch.draw(case_8, 585, Gdx.graphics.getHeight() - 120 - 1010, 80, 80);
 					 }
 
 			         break;
