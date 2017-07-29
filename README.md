@@ -28,8 +28,8 @@ l'appui sur le bouton "play" ouvre le lien vers Itunes :
 l'appui sur les 3 carrés en haut à droite ouvre un menu d'options :
 - DIVERGENCE FM affiche les résultats archivés de cette radio
 - FIP affiche les résultats archivés de cette radio
-- La corbeille affiche cette icone qui permet de supprimer une entré de la liste
-- La corbeille barrée affiche les résultats supprimés et cette icone qui permet de restaurer une entré de la liste
+- La corbeille affiche cette icone qui permet de supprimer une entrée de la liste
+- La corbeille barrée affiche les résultats supprimés et cette icone qui permet de restaurer une entreé de la liste
 - PLAY affiche cette icone, qui lance un éventuel lien vers Itunes
 - YouTube affiche cette icone, qui lance le lien vers YouTube
 - l'horloge affiche l'heure dans les résultats
