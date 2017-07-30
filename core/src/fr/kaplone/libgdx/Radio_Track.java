@@ -524,6 +524,10 @@ public class Radio_Track extends ApplicationAdapter {
 					}
 				};
 
+				if (resultatsPlayList == null){
+					resultatsPlayList = new ArrayList<>();
+				}
+
 				Collections.sort(resultatsPlayList, resultatComparator);
 
 				for (Resultat r : resultatsPlayList){
@@ -855,6 +859,10 @@ public class Radio_Track extends ApplicationAdapter {
 
 								final Json js = new Json();
 								resultats = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
+
+								if (resultats == null){
+									resultats = new ArrayList<>();
+								}
 
 								resultats.add(resultatMap.get(nom));
 
