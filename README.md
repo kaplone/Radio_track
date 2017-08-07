@@ -1,6 +1,9 @@
 # Radio_track
 Une application android pour obtenir / archiver les informations sur les titres entendus à la radio.
 
+voici l'apk généré :
+[Radio_track.apk](https://github.com/kaplone/Radio_track/raw/master/android-debug.apk)
+
 L'écran à l'ouverture de l'application :
 ![fenêtre principale](100.png)
 
@@ -53,4 +56,4 @@ Une recherche textuelle est possible dans la liste :
 
 
 voici l'apk généré :
-[Radio_track.apk](android-debug.apk)
+[Radio_track.apk](https://github.com/kaplone/Radio_track/raw/master/android-debug.apk)
