@@ -7,26 +7,32 @@ voici l'apk généré :
 [Radio_track.apk](https://github.com/kaplone/Radio_track/raw/master/android-debug.apk)
 
 L'écran à l'ouverture de l'application :
+
 ![fenêtre principale](100.png)
 
 
 Si le téléphone a un accès datas, en sélectionnant une station, l'application récupère la liste des derniers titres diffusés :
+
 ![fenêtre principale](101.png)
 
 
 l'appui sur le bouton "not saved" enregistre localement les informations sur le titre :
+
 ![fenêtre principale](101a.png)
 
 
 l'appui sur le bouton "playlist" en haut à gauche dans la barre ouvre la liste des pistes référencées (le bouton "radio" permet un retour vers la liste des radios) :
+
 ![fenêtre principale](101b.png)
 
 
 Les pistes sont présentées par heure et par date. L'appui sur le bouton "youtube" ouvre le lien vers YouTube. FIP propose parfois un lien supplémentaire vers Itunes :
+
 ![fenêtre principale](102.png)
 
 
 l'appui sur le bouton "play" ouvre le lien vers Itunes :
+
 ![fenêtre principale](111.png)
 
 
@@ -39,6 +45,7 @@ l'appui sur les 3 carrés en haut à droite ouvre un menu d'options :
 - YouTube affiche cette icone, qui lance le lien vers YouTube
 - l'horloge affiche l'heure dans les résultats
 - le calendrier affiche les dates dans les résultats
+
 ![fenêtre principale](104.png)
 ![fenêtre principale](105.png)
 ![fenêtre principale](105b.png)
@@ -46,7 +53,9 @@ l'appui sur les 3 carrés en haut à droite ouvre un menu d'options :
 
 
 Une recherche textuelle est possible dans la liste :
-![fenêtre principale](107.png) ![fenêtre principale](108.png)
+
+![fenêtre principale](107.png)
+![fenêtre principale](108.png)
 
 
 
