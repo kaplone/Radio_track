@@ -1138,7 +1138,14 @@ public class Radio_Track extends ApplicationAdapter {
 				     font.getData().setScale(4.1f);
 				     font_grande.draw(batch, motif_recherche, 150, Gdx.graphics.getHeight() - 20);
 
-				     font_moyenne.draw(batch, String.format("%d résultats trouvés", nb_resultats), 180, Gdx.graphics.getHeight() - 110);
+				     font_moyenne.draw(batch,
+							           String.format("%d résultat%s trouvé%s",
+							                             nb_resultats,
+									                     nb_resultats > 1 ? "s" : "",
+											             nb_resultats > 1 ? "s" : ""
+											   ),
+							           180,
+							           Gdx.graphics.getHeight() - 110);
 
 					 if (options) {
 						batch.draw(fond_options_haut, 200, Gdx.graphics.getHeight() - 120 -(Gdx.graphics.getHeight() - 200), Gdx.graphics.getWidth() - 230, Gdx.graphics.getHeight() - 200);
