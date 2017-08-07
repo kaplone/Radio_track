@@ -20,7 +20,7 @@ l'appui sur le bouton "not saved" enregistre localement les informations sur le 
 
 l'appui sur le bouton "playlist" en haut à gauche dans la barre ouvre la liste des pistes référencées (le bouton "radio" permet un retour vers la liste des radios) :
 
-![fenêtre principale](101b.png)
+![fenêtre principale](215.png)
 
 
 Les pistes sont présentées par heure et par date. L'appui sur le bouton "youtube" ouvre le lien vers YouTube. FIP propose parfois un lien supplémentaire vers Itunes :
