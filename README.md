@@ -18,7 +18,8 @@ Si le téléphone a un accès datas, en sélectionnant une station, l'applicatio
 
 l'appui sur le bouton "not saved" enregistre localement les informations sur le titre :
 
-![fenêtre principale](101a.png)
+![fenêtre principale](213.png)
+![fenêtre principale](214.png)
 
 
 l'appui sur le bouton "playlist" en haut à gauche dans la barre ouvre la liste des pistes référencées (le bouton "radio" permet un retour vers la liste des radios) :
