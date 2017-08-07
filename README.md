@@ -40,6 +40,9 @@ l'appui sur les 3 carrés en haut à droite ouvre un menu d'options :
 - l'horloge affiche l'heure dans les résultats
 - le calendrier affiche les dates dans les résultats
 ![fenêtre principale](104.png)
+![fenêtre principale](105.png)
+![fenêtre principale](105b.png)
+![fenêtre principale](106.png)
 
 
 Une recherche textuelle est possible dans la liste :
