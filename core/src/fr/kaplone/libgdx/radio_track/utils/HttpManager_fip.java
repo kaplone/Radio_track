@@ -1,4 +1,4 @@
-package fr.kaplone.libgdx;
+package fr.kaplone.libgdx.radio_track.utils;
 
 /**
  * Created by kaplone on 12/06/17.
@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.*;
+import fr.kaplone.libgdx.radio_track.models.Resultat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class HttpManager_fip implements HttpResponseListener
         {
             result = httpResponse.getResultAsString();
 
-            List<Fip_stream> fip_streams = new ArrayList<>();
+            List<fr.kaplone.libgdx.radio_track.models.Fip_stream> fip_streams = new ArrayList<>();
 
             Json json_parser = new Json();
             JsonReader json = new JsonReader();
@@ -54,14 +55,14 @@ public class HttpManager_fip implements HttpResponseListener
 
 
             if (! premier.getString("embedType").equals("blank")){
-                Fip_stream fs = new Fip_stream();
+                fr.kaplone.libgdx.radio_track.models.Fip_stream fs = new fr.kaplone.libgdx.radio_track.models.Fip_stream();
                 fs.read(json_parser, premier);
                 fip_streams.add(fs);
             }
 
 
             JsonValue temp = premier;
-            Fip_stream fs_temp;
+            fr.kaplone.libgdx.radio_track.models.Fip_stream fs_temp;
 
             List<Resultat> resultats = new ArrayList<>();
 
@@ -89,7 +90,7 @@ public class HttpManager_fip implements HttpResponseListener
                     resultats.add(r);
                 }
             }
-            Radio_Track.setResultats(resultats);
+            fr.kaplone.libgdx.radio_track.app.Radio_Track.setResultats(resultats);
         }
     }
 

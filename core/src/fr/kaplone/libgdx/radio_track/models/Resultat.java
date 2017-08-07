@@ -1,4 +1,4 @@
-package fr.kaplone.libgdx;
+package fr.kaplone.libgdx.radio_track.models;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ public class Resultat {
     private String auteur;
     private String itunes;
     private String youtube;
-    private Fip_stream fip;
+    private fr.kaplone.libgdx.radio_track.models.Fip_stream fip;
     private boolean deleted;
 
     public Resultat() {
@@ -28,7 +28,7 @@ public class Resultat {
         this.auteur = auteur;
     }
 
-    public Resultat(Fip_stream fip) {
+    public Resultat(fr.kaplone.libgdx.radio_track.models.Fip_stream fip) {
 
         this.fip = fip;
         this.radio = "FIP";
@@ -97,11 +97,11 @@ public class Resultat {
         this.auteur = auteur;
     }
 
-    public Fip_stream getFip() {
+    public fr.kaplone.libgdx.radio_track.models.Fip_stream getFip() {
         return fip;
     }
 
-    public void setFip(Fip_stream fip) {
+    public void setFip(fr.kaplone.libgdx.radio_track.models.Fip_stream fip) {
         this.fip = fip;
     }
 

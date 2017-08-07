@@ -1,4 +1,4 @@
-package fr.kaplone.libgdx;
+package fr.kaplone.libgdx.radio_track.models;
 
 
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;

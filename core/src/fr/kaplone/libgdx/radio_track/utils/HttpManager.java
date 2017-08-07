@@ -1,4 +1,4 @@
-package fr.kaplone.libgdx;
+package fr.kaplone.libgdx.radio_track.utils;
 
 /**
  * Created by kaplone on 12/06/17.
@@ -9,6 +9,7 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader;
+import fr.kaplone.libgdx.radio_track.models.Resultat;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -110,7 +111,7 @@ public class HttpManager implements HttpResponseListener
 
             }
 
-            Radio_Track.setResultats(resultats);
+            fr.kaplone.libgdx.radio_track.app.Radio_Track.setResultats(resultats);
         }
     }
 

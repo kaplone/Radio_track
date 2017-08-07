@@ -1,20 +1,23 @@
-package fr.kaplone.libgdx;
+package fr.kaplone.libgdx.radio_track.app;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.SnapshotArray;
+import fr.kaplone.libgdx.radio_track.utils.FontFactory;
+import fr.kaplone.libgdx.radio_track.utils.GoURL;
+import fr.kaplone.libgdx.radio_track.models.Resultat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,6 +30,9 @@ public class Radio_Track extends ApplicationAdapter {
 	Stage stage;
 	SpriteBatch batch;
 	BitmapFont font;
+	BitmapFont font_petite;
+	BitmapFont font_moyenne;
+	BitmapFont font_grande;
 	Texture divergence;
 	Texture fip;
 	Texture playList;
@@ -63,14 +69,14 @@ public class Radio_Track extends ApplicationAdapter {
 	Texture case_7;
 	Texture case_8;
 
-	Cases c1;
-	Cases c2;
-	Cases c3;
-	Cases c4;
-	Cases c5;
-	Cases c6;
-	Cases c7;
-	Cases c8;
+	fr.kaplone.libgdx.radio_track.models.Cases c1;
+	fr.kaplone.libgdx.radio_track.models.Cases c2;
+	fr.kaplone.libgdx.radio_track.models.Cases c3;
+	fr.kaplone.libgdx.radio_track.models.Cases c4;
+	fr.kaplone.libgdx.radio_track.models.Cases c5;
+	fr.kaplone.libgdx.radio_track.models.Cases c6;
+	fr.kaplone.libgdx.radio_track.models.Cases c7;
+	fr.kaplone.libgdx.radio_track.models.Cases c8;
 
 	float fip_w;
 	float fip_h;
@@ -123,12 +129,17 @@ public class Radio_Track extends ApplicationAdapter {
 	private int page;
 
 	private boolean options;
-	private boolean recherche;
+
+	private int nb_resultats;
+
+	private ShapeRenderer shapeRenderer;
 	
 	@Override
 	public void create () {
 
 		stage = new Stage();
+
+		shapeRenderer = new ShapeRenderer();
 
 		final Actor divergence_actor = new Actor();
 		final Actor fip_actor = new Actor();
@@ -168,15 +179,16 @@ public class Radio_Track extends ApplicationAdapter {
 
 		case_nue = new Texture("case.png");
 		case_coche = new Texture("case_coche.png");
+		case_coche.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-		c1 =new Cases(true);
-		c2 =new Cases(true);
-		c3 =new Cases(false);
-		c4 =new Cases(false);
-		c5 =new Cases(true);
-		c6 =new Cases(true);
-		c7 =new Cases(true);
-		c8 =new Cases(true);
+		c1 =new fr.kaplone.libgdx.radio_track.models.Cases(true);
+		c2 =new fr.kaplone.libgdx.radio_track.models.Cases(true);
+		c3 =new fr.kaplone.libgdx.radio_track.models.Cases(false);
+		c4 =new fr.kaplone.libgdx.radio_track.models.Cases(false);
+		c5 =new fr.kaplone.libgdx.radio_track.models.Cases(true);
+		c6 =new fr.kaplone.libgdx.radio_track.models.Cases(true);
+		c7 =new fr.kaplone.libgdx.radio_track.models.Cases(true);
+		c8 =new fr.kaplone.libgdx.radio_track.models.Cases(true);
 
 		case_1 = new Texture(c1.getpath());
 		case_2 = new Texture(c2.getpath());
@@ -362,6 +374,10 @@ public class Radio_Track extends ApplicationAdapter {
 		font = new BitmapFont();
 		font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
+		font_petite = FontFactory.getFont("fonts/Aller_Std_Rg.ttf", 24, Color.WHITE);
+		font_moyenne = FontFactory.getFont("fonts/Aller_Std_Rg.ttf", 42, Color.WHITE);
+		font_grande = FontFactory.getFont("fonts/Aller_Std_Rg.ttf", 72, Color.WHITE);
+
 		divergence_w = 540;
 		divergence_h = 300;
 		divergence_x = 75;
@@ -424,8 +440,8 @@ public class Radio_Track extends ApplicationAdapter {
 		stage.addActor(menu_recherche_actor);
 		menu_recherche_actor.setTouchable(Touchable.disabled);
 
-		menu_actor.setSize(menu_icons_w3, menu_icons_h);
-		menu_actor.setPosition(menu_icons_x3, menu_icons_y);
+		menu_actor.setSize(menu_icons_w3 + 50, menu_icons_h);
+		menu_actor.setPosition(menu_icons_x3 - 50, menu_icons_y);
 		menu_actor.addListener(new InputListener(){
 			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -475,7 +491,7 @@ public class Radio_Track extends ApplicationAdapter {
 				if (! jsonFile.exists()){
 
 					if (file.exists()){
-						ConvertTxt2Json.importTxt(file, jsonFile);
+						fr.kaplone.libgdx.radio_track.utils.ConvertTxt2Json.importTxt(file, jsonFile);
 					}
 
 					else {
@@ -529,6 +545,11 @@ public class Radio_Track extends ApplicationAdapter {
 				}
 
 				Collections.sort(resultatsPlayList, resultatComparator);
+
+//				Label.LabelStyle labelStyle = new Label.LabelStyle();
+//				labelStyle.font = font_grande;
+
+				nb_resultats = 0;
 
 				for (Resultat r : resultatsPlayList){
 
@@ -702,6 +723,7 @@ public class Radio_Track extends ApplicationAdapter {
 								}
 
 								vgs.add(vg);
+								nb_resultats ++;
 
 							}
 						}
@@ -763,6 +785,8 @@ public class Radio_Track extends ApplicationAdapter {
 		divergence_actor.addListener(new InputListener(){
 			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+
+				List<VerticalGroup> vgs = new ArrayList<>();
 
 				divergence_w = 650;
 				divergence_h = 375;
@@ -880,11 +904,23 @@ public class Radio_Track extends ApplicationAdapter {
 						}
 					});
 
-					table.add(vg);
-					table.row();
+					vgs.add(vg);
+
+					Image im_barre = new Image(barre);
+
+					VerticalGroup h_barre_ = new VerticalGroup();
+					h_barre_.addActor(im_barre);
+					h_barre_.padTop(40);
+					vgs.add(h_barre_);
 				}
 
+				for (int i = 0; i < vgs.size(); i++){
+
+					table.add(vgs.get(i));
+					table.row();
+				}
 				scroll.setScrollY(0);
+
 				return true;
 			}
 		});
@@ -1076,6 +1112,11 @@ public class Radio_Track extends ApplicationAdapter {
 		stage.draw();
 		//stage.setDebugAll(true);
 
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(0.2f, 0.3f, 0.3f, 0.1f);
+		shapeRenderer.rect(0, Gdx.graphics.getHeight() - 160, Gdx.graphics.getWidth(), 160);
+		shapeRenderer.end();
+
 		batch.begin();
 
 		batch.draw(menu_bandeau, 2, menu_bandeau_y, menu_bandeau_w, menu_bandeau_h);
@@ -1095,7 +1136,9 @@ public class Radio_Track extends ApplicationAdapter {
 			case 2 : batch.draw(menu_radio, menu_icons_x1, menu_icons_y, menu_icons_w1, menu_icons_h);
 				     batch.draw(menu_recherche, menu_icons_x2, menu_icons_y, menu_icons_w2, menu_icons_h);
 				     font.getData().setScale(4.1f);
-				     font.draw(batch, motif_recherche, 150, Gdx.graphics.getHeight() - 20);
+				     font_grande.draw(batch, motif_recherche, 150, Gdx.graphics.getHeight() - 20);
+
+				     font_moyenne.draw(batch, String.format("%d résultats trouvés", nb_resultats), 180, Gdx.graphics.getHeight() - 110);
 
 					 if (options) {
 						batch.draw(fond_options_haut, 200, Gdx.graphics.getHeight() - 120 -(Gdx.graphics.getHeight() - 200), Gdx.graphics.getWidth() - 230, Gdx.graphics.getHeight() - 200);
@@ -1109,14 +1152,18 @@ public class Radio_Track extends ApplicationAdapter {
 						batch.draw(menu_horloge, 	265, Gdx.graphics.getHeight() - 120 - 880,  80,  80);
 						batch.draw(menu_calendrier, 265, Gdx.graphics.getHeight() - 120 - 1010, 80,  80);
 
-						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 50);
-						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 180);
-						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 310);
-						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 440);
-						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 570);
-						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 700);
-						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 830);
-						font.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 960);
+						font_moyenne.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 50);
+						font_moyenne.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 180);
+						font_moyenne.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 320);
+						font_petite.draw(batch, "(Supprimer)", 400, Gdx.graphics.getHeight() - 120 - 280);
+						font_moyenne.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 450);
+						font_petite.draw(batch, "(Restaurer)", 400, Gdx.graphics.getHeight() - 120 - 410);
+						font_moyenne.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 580);
+						font_petite.draw(batch, "(Liens iTunes)", 400, Gdx.graphics.getHeight() - 120 - 540);
+						font_moyenne.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 710);
+						font_petite.draw(batch, "(Liens YouTube)", 400, Gdx.graphics.getHeight() - 120 - 670);
+						font_moyenne.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 830);
+						font_moyenne.draw(batch, "Afficher : ", 400, Gdx.graphics.getHeight() - 120 - 960);
 
 						batch.draw(case_1, 585, Gdx.graphics.getHeight() - 120 - 100, 80, 80);
 						batch.draw(case_2, 585, Gdx.graphics.getHeight() - 120 - 230, 80, 80);

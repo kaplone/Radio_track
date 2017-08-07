@@ -1,4 +1,4 @@
-package fr.kaplone.libgdx;
+package fr.kaplone.libgdx.radio_track.models;
 
 /**
  * Created by kaplone on 29/07/17.
@@ -10,7 +10,7 @@ public class Cases {
     private final String NUE = "case.png";
     private final String COCHE = "case_coche.png";
 
-    Cases(boolean c){
+    public Cases(boolean c){
         this.checked = c;
     }
 
