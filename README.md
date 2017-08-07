@@ -1,6 +1,8 @@
 # Radio_track
 Une application android pour obtenir / archiver les informations sur les titres entendus à la radio.
 
+L'application a été testée et fonctionne à partir de la version 4.4 d'android (KitKat) et un affichage de 1280x720.
+
 voici l'apk généré :
 [Radio_track.apk](https://github.com/kaplone/Radio_track/raw/master/android-debug.apk)
 
