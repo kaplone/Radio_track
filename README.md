@@ -33,6 +33,7 @@ Les pistes sont présentées par heure et par date. L'appui sur le bouton "youtu
 
 l'appui sur le bouton "play" ouvre le lien vers Itunes :
 
+![fenêtre principale](112.png)
 ![fenêtre principale](111.png)
 
 
@@ -49,6 +50,7 @@ l'appui sur les 3 carrés en haut à droite ouvre un menu d'options :
 ![fenêtre principale](104.png)
 ![fenêtre principale](105.png)
 ![fenêtre principale](105b.png)
+![fenêtre principale](105a.png)
 ![fenêtre principale](106.png)
 
 
