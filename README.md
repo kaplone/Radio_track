@@ -11,11 +11,7 @@ L'écran à l'ouverture de l'application :
 ![fenêtre principale](100.png)
 
 
-Si le téléphone a un accès datas, en sélectionnant une station, l'application récupère la liste des derniers titres diffusés :
-
-![fenêtre principale](101.png)
-
-
+Si le téléphone a un accès datas, en sélectionnant une station, l'application récupère la liste des derniers titres diffusés.
 l'appui sur le bouton "not saved" enregistre localement les informations sur le titre :
 
 ![fenêtre principale](213.png)
