@@ -33,12 +33,7 @@ public class HttpManager implements HttpResponseListener
     @Override
     public void handleHttpResponse(Net.HttpResponse httpResponse)
     {
-        if( httpResponse.getStatus().getStatusCode() != 200 )
-        {
-            //ERROR
-            float errorCode = httpResponse.getStatus().getStatusCode();
-        }
-        else
+        if( httpResponse.getStatus().getStatusCode() == 200 )
         {
             result = httpResponse.getResultAsString();
 

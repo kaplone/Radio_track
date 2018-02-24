@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,24 +16,32 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import fr.kaplone.libgdx.radio_track.utils.FontFactory;
 import fr.kaplone.libgdx.radio_track.utils.GoURL;
 import fr.kaplone.libgdx.radio_track.models.Resultat;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.jar.Manifest;
 
 
 public class Radio_Track extends ApplicationAdapter {
 
 	Stage stage;
 	SpriteBatch batch;
+	private OrthographicCamera camera;
+	private Viewport viewport;
+
 	BitmapFont font;
 	BitmapFont font_petite;
 	BitmapFont font_moyenne;
 	BitmapFont font_grande;
+
 	Texture divergence;
 	Texture fip;
 	Texture playList;
@@ -133,13 +142,27 @@ public class Radio_Track extends ApplicationAdapter {
 	private int nb_resultats;
 
 	private ShapeRenderer shapeRenderer;
+
+	public final static float VIRTUAL_SCREEN_HEIGHT = 1280;
+	public final static float VIRTUAL_SCREEN_WIDTH = 720;
 	
 	@Override
 	public void create () {
 
-		stage = new Stage();
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
 
+		stage = new Stage(new StretchViewport(width, height));
 		shapeRenderer = new ShapeRenderer();
+		batch = new SpriteBatch();
+
+		camera = new OrthographicCamera();
+		camera.translate(camera.viewportWidth/2,camera.viewportHeight/2);
+		//camera.update();
+		viewport = new StretchViewport(VIRTUAL_SCREEN_WIDTH, VIRTUAL_SCREEN_HEIGHT,camera);
+		viewport.apply();
+
+		Gdx.input.setInputProcessor(stage);
 
 		final Actor divergence_actor = new Actor();
 		final Actor fip_actor = new Actor();
@@ -363,8 +386,6 @@ public class Radio_Track extends ApplicationAdapter {
 		case_8_actor.setTouchable(Touchable.disabled);
 		stage.addActor(case_8_actor);
 
-		Gdx.input.setInputProcessor(stage);
-
 		formater = new SimpleDateFormat("dd/MM/yyyy");
 
 		motif_recherche = "";
@@ -481,24 +502,6 @@ public class Radio_Track extends ApplicationAdapter {
 
 				String[] lignes = new String[0];
 
-				/*
-				 * Le première version diffusée enregistrait les informatione dans un format TXT.
-				 * Son parsage était laborieux (pas de tag de sortie de bloc)
-				 *
-				 * Si des enregistrements dans ce format existent, ils sont convertis au format Json, puis le fichier .txt est supprimé.
-				 */
-
-				if (! jsonFile.exists()){
-
-					if (file.exists()){
-						fr.kaplone.libgdx.radio_track.utils.ConvertTxt2Json.importTxt(file, jsonFile);
-					}
-
-					else {
-						jsonFile.writeString("", true);
-					}
-				}
-
 				VerticalGroup vg = new VerticalGroup();
 				VerticalGroup vg1 = new VerticalGroup();
 				HorizontalGroup hg = new HorizontalGroup();
@@ -523,7 +526,12 @@ public class Radio_Track extends ApplicationAdapter {
 				}
 
                 final Json js = new Json();
-				resultatsPlayList = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
+
+				if (! jsonFile.readString().isEmpty()){
+					resultatsPlayList = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
+				}
+
+				//resultatsPlayList = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
 
 				Comparator<Resultat> resultatComparator = new Comparator<Resultat>() {
 					@Override
@@ -882,7 +890,10 @@ public class Radio_Track extends ApplicationAdapter {
 								tbb_ = new TextButton("Saved", skin, "oval0");
 
 								final Json js = new Json();
-								resultats = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
+
+								if (! jsonFile.readString().isEmpty()){
+									resultats = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
+								}
 
 								if (resultats == null){
 									resultats = new ArrayList<>();
@@ -1029,6 +1040,7 @@ public class Radio_Track extends ApplicationAdapter {
 								tbb_ = new TextButton("Saved", skin, "oval0");
 
 								final Json js = new Json();
+
 								resultats = js.fromJson(ArrayList.class, Resultat.class, jsonFile);
 
 								resultats.add(resultatMap.get(nom));
@@ -1098,15 +1110,54 @@ public class Radio_Track extends ApplicationAdapter {
 
 		filename = "radio_track.txt";
 		jsonFilename = "radio_track.json";
-		file = Gdx.files.external(filename);
-		jsonFile = Gdx.files.external(jsonFilename);
+		if(Gdx.files.isExternalStorageAvailable()) {  // if SD card is inserted
+			System.out.println("external");
+			file = Gdx.files.external(filename);
+			jsonFile = Gdx.files.external(jsonFilename);
+		}
+		else {
+			System.out.println("local");
+			file = Gdx.files.local(filename);
+			jsonFile = Gdx.files.local(jsonFilename);
+		}
 
+		/*
+				 * Le première version diffusée enregistrait les informatione dans un format TXT.
+				 * Son parsage était laborieux (pas de tag de sortie de bloc)
+				 *
+				 * Si des enregistrements dans ce format existent, ils sont convertis au format Json, puis le fichier .txt est supprimé.
+				 */
+
+		if (! jsonFile.exists()){
+
+			System.out.println("jsonFile non trouvé");
+
+			try {
+				jsonFile.file().createNewFile();
+				System.out.println("jsonFile créé");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			if (file.exists()){
+				fr.kaplone.libgdx.radio_track.utils.ConvertTxt2Json.importTxt(file, jsonFile);
+			}
+		}
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.2f, 0.3f, 0.3f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+
+		GL20 gl = Gdx.graphics.getGL20();
+		gl.glClearColor(0.2f, 0.3f, 0.3f, 1);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glViewport(0,0,(int) width,(int) height);
+
+		camera.update();
+		batch.setProjectionMatrix(camera.combined);
 
 		stage.act();
 		stage.draw();
@@ -1188,6 +1239,12 @@ public class Radio_Track extends ApplicationAdapter {
 
 
 		batch.end();
+	}
+
+	@Override
+	public void resize(int width, int height){
+		viewport.update(width, height);
+		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 	}
 	
 	@Override

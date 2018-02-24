@@ -35,12 +35,7 @@ public class HttpManager_fip implements HttpResponseListener
     @Override
     public void handleHttpResponse(Net.HttpResponse httpResponse)
     {
-        if( httpResponse.getStatus().getStatusCode() != 200 )
-        {
-            //ERROR
-            float errorCode = httpResponse.getStatus().getStatusCode();
-        }
-        else
+        if(httpResponse.getStatus().getStatusCode() == 200)
         {
             result = httpResponse.getResultAsString();
 
@@ -82,7 +77,7 @@ public class HttpManager_fip implements HttpResponseListener
                     r.setRadio("FIP");
                     r.setHeure(formater_heure.format(date));
                     r.setDate(formater_date.format(date));
-                    r.setAuteur(temp.has("performers") ? temp.getString("performers").replace("'", " ") : "");
+                    r.setAuteur(temp.has("performers") ? temp.getString("performers").replace("'", " ") : temp.getString("authors").replace("'", " "));
                     r.setTitre(temp.has("title") ? temp.getString("title").replace("'", " ") : "");
                     r.setItunes(temp.has("path") ? temp.getString("path") : "");
                     r.setYoutube(temp.has("lienYoutube") ? temp.getString("lienYoutube") : "");

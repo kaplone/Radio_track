@@ -82,11 +82,14 @@ public class Resultat {
     }
 
     public String getAuteur() {
-        if (this.auteur != null){
+        if (this.auteur != null && ! this.auteur.equals("")){
             return this.auteur.substring(0, Math.min(this.auteur.length(), 38));
         }
-        else if (this.fip != null && this.fip.getPerformers() != null){
+        else if (this.fip != null && this.fip.getPerformers() != null && ! this.fip.getPerformers().equals("")){
             return fip.getPerformers().substring(0, Math.min(this.fip.getPerformers().length(), 38));
+        }
+        else if((this.fip != null && this.fip.getAuthors() != null && ! this.fip.getAuthors().equals(""))){
+            return fip.getAuthors().substring(0, Math.min(this.fip.getAuthors().length(), 38));
         }
         else {
             return "";

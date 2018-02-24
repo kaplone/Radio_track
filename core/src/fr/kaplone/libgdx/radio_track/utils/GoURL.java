@@ -23,7 +23,8 @@ public class GoURL {
                                 System.out.println("break");
                                 break;
 
-            case "fip" :        URL = "http://www.fipradio.fr/livemeta/7";
+            //case "fip" :        URL = "http://www.fipradio.fr/livemeta/7";
+            case "fip" :        URL = "https://www.fip.fr/livemeta/7";
 
                                 new HttpManager_fip(URL, HttpMethods.GET, "");
                                 System.out.println("break");
